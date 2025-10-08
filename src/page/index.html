@@ -275,16 +275,18 @@
         const postButton = document.getElementById('post-button');
         const logoutButton = document.getElementById('logout-button');
 
-        //--- NEW LOGOUT MODAL SELECTOR ---
-        const logoutConfirmationModal = document.getElementById('logout-confirmation-modal');
-        const logoutModalContent = document.getElementById('logout-modal-content');
-        const confirmLogoutYes = document.getElementById('confirm-logout-yes');
-        const confirmLogoutNo = document.getElementById('confirm-logout-no');
 
         //--- NEW FEELING/ACTIVITY SELECTOR --
         const feelingActivityButton = document.getElementById('feeling-activity-button');
         const feelingActivityDropdown = document.getElementById('feeling-activity-dropdown');
         const dropdownOptions = document.querySelectorAll('.dropdown-option');
+
+
+        //--- NEW LOGOUT MODAL SELECTOR ---
+        const logoutConfirmationModal = document.getElementById('logout-confirmation-modal');
+        const logoutModalContent = document.getElementById('logout-modal-content');
+        const confirmLogoutYes = document.getElementById('confirm-logout-yes');
+        const confirmLogoutNo = document.getElementById('confirm-logout-no');
 
 
 
@@ -300,43 +302,13 @@
 
         function closeLogoutModal() {
           logoutConfirmationModal.classList.remove('opacity-100');
-          logoutModalContent.classList.add('scale95', 'opacity-0');
+          logoutModalContent.classList.add('scale-95', 'opacity-0');
           logoutModalContent.classList.remove('scale-100');
 
           setTimeout(() => {
             logoutConfirmationModal.classList.add('hidden');
           }, 300);
         }
-
-        //--- NEW FEELING/ACTIVITY LOGIC ---
-        if (feelingActivityButton) {
-          feelingActivityButton.addEventListener('click', function(e) => {
-            e.stopPropagation();
-            feelingActivityDropdown.classList.toggle('hidden');
-          })
-        }
-
-        dropdownOptions.forEach(option => {
-          option.addEventListener('click', function(e) => {
-            e.stopPropagation();
-
-            const selectedText = option.textContent.trim();
-            const selectedEmoji = option.querySelector('i').textContent.trim();
-
-            openModal();
-            postTextArea.value = `- feeling${selectedText} ${selectedEmoji}`;
-            postTextArea.dispatchEvent(new Event('input'));
-
-            feelingActivityDropdown.classList.add('hidden');
-          });
-        });
-
-        document.addEventListener('click', function(e) => {
-          if (feelingActivityDropdown && !feelingActivityDropdown.classList.contains('hidden') && !feelingActivityButton.contains(e.target)) {
-              feelingActivityDropdown.classList.add('hidden');
-          }
-        });
-        // --END OF FEELING/ACTIVITY LOGIC ---
 
 
         if (logoutButton) {
@@ -369,6 +341,38 @@
             closeLogoutModal();
           }
         })
+
+
+        //--- NEW FEELING/ACTIVITY LOGIC ---
+        if (feelingActivityButton) {
+          feelingActivityButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            feelingActivityDropdown.classList.toggle('hidden');
+          })
+        }
+
+        dropdownOptions.forEach(option => {
+          option.addEventListener('click', function(e) {
+            e.stopPropagation();
+
+            const selectedText = option.textContent.trim();
+            const selectedEmoji = option.querySelector('i').textContent.trim();
+
+            openModal();
+            postTextArea.value = `- feeling${selectedText} ${selectedEmoji}`;
+            postTextArea.dispatchEvent(new Event('input'));
+
+            feelingActivityDropdown.classList.add('hidden');
+          });
+        });
+
+        document.addEventListener('click', function(e) {
+          if (feelingActivityDropdown && !feelingActivityDropdown.classList.contains('hidden') && !feelingActivityButton.contains(e.target)) {
+              feelingActivityDropdown.classList.add('hidden');
+          }
+        });
+        // --END OF FEELING/ACTIVITY LOGIC ---
+
 
         // --- Modal Functionality ---
         function openModal() {
