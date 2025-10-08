@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <title>FLEXIFY</title>
+    <style>
+        .frosted-glass {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <section class="showcase relative min-h-screen flex justify-center items-start bg-gray-100 dark:bg-gray-900">
+
+        <header class="absolute top-0 left-0 w-full p-8 z-30 flex justify-between items-center">
+
+            <div class="text-white text-3xl font-bold tracking-widest" style="font-family: 'Bitcount Prop Single Ink', sans-serif;">
+                FLEXIFY
+            </div>
+
+            <button
+                type="button"
+                id="logout-button"
+                class="frosted-glass px-4 py-2 text-sm font-bold text-white bg-red-600 rounded-full hover:bg-red-700 transition duration-200 shadow-lg z-40">
+                Logout
+            </button>
+
+        </header>
+
+        <video src="/smoke.mp4" muted loop autoplay class="absolute top-0 left-0 w-full h-full object-cover"></video>
+
+        <!-- MAIN CONTENT CONTAINER (Contains Create Post and the Feed) -->
+        <div class="main-content relative z-10 w-full flex flex-col items-center pt-20 p-4 space-y-6">
+
+            <!-- CREATE POST WIDGET (Frosted Glass Design) -->
+            <div class="w-full max-w-xl bg-white/10 dark:bg-gray-900/40 frosted-glass border border-white/20 dark:border-gray-700/50 rounded-lg shadow-xl p-4">
+
+                <!-- THE CLICKABLE AREA: open-post-modal -->
+                <div class="flex items-center space-x-3 mb-3 border-b border-white/10 dark:border-gray-600/50 pb-3 cursor-pointer" id="open-post-modal">
+                    <div class="h-10 w-10 rounded-full object-cover flex items-center justify-center bg-white/30 text-white font-bold text-lg">
+                        UN
+                    </div>
+                    <div class="flex-1 bg-white/5 dark:bg-black/20 p-2 rounded-full text-white dark:text-gray-300 hover:bg-white/10 dark:hover:bg-black/30 transition duration-150">
+                        What's on your mind, User?
+                    </div>
+                </div>
+
+                <div class="flex justify-around text-sm font-semibold text-white dark:text-gray-300">
+                    <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 dark:hover:bg-black/20 flex-1 justify-center">
+                        <i class="text-red-400 text-xl">📸</i>
+                        <span>Live video</span>
+                    </button>
+                    <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 dark:hover:bg-black/20 flex-1 justify-center">
+                        <i class="text-green-500 text-xl">🖼️</i>
+                        <span>Photo/video</span>
+                    </button>
+                    <div class="relative flex-l justify-center">
+                      <button
+                        id="feeling-activity-button"
+                        class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 dark:hover:bg-black/20 w-full justify-center">
+                        <i class="text-yellow-500 text-xl">😊</i>
+                        <span>Feeling/activity</span>
+                      </button>
+
+                      <div id="feeling-activity-dropdown" class="hidden absolute left-0 right-0 mt-2 z-40 bg-gray-800/90 frosted-glass border border-white/10 rounded-lg shadow-2xl p-2 text-white/90">
+                          <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-400">Feelings:</div>
+                            <button class="dropdown-option flex items-center space-x-2 w-full p-2 rounded-md hover:bg-white/10 transition duration-150">
+                                <i class="text-2xl">😃</i>
+                                  <span>Happy</span>
+                            </button>
+                            <button class="dropdown-option flex items-center space-x-2 w-full p-2 rounded-md hover:bg-white/10 transition duration-150">
+                                <i class="text-2xl">😴</i>
+                                  <span>Tired</span>
+                            </button>
+                            <button class="dropdown-option flex items-center space-x-2 w-full p-2 rounded-md hover:bg-white/10 transition duration-150">
+                                <i class="text-2xl">🥳</i>
+                                  <span>Celebratory</span>
+                            </button>
+
+                      <div class="px-2 py-1 mt-2 text-xs font-semibold uppercase text-gray-400 border-t border-white/10 pt-2">Activities:</div>
+                            <button class="dropdown-option flex items-center space-x-2 w-full p-2 rounded-md hover:bg-white/10 transition duration-150">
+                              <i class="text-2xl">🎮</i>
+                                <span>Playing Games</span>
+                            </button>
+                            <button class="dropdown-option flex items-center space-x-2 w-full p-2 rounded-md hover:bg-white/10 transition duration-150">
+                              <i class="text-2xl">🎧</i>
+                                <span>Listening to Music</span>
+                            </button>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXISTING POSTS FEED -->
+            <div id="post-feed" class="w-full max-w-xl space-y-4">
+                <!-- START SAMPLE POST 1: Frosted Glass Style -->
+                <div class="bg-white/10 dark:bg-gray-900/40 frosted-glass border border-white/20 dark:border-gray-700/50 rounded-xl shadow-xl p-4 text-white">
+
+                    <!-- Post Header -->
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="h-12 w-12 rounded-full flex items-center justify-center bg-red-400 text-white font-bold text-xl">
+                            A
+                        </div>
+                        <div>
+                            <p class="font-bold text-white">Caloy</p>
+                            <p class="text-xs text-gray-300/70">1 hour ago <span class="ml-1">🌍</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Post Body/Content -->
+                    <p class="text-gray-200 mb-4 leading-relaxed">
+                        Absolutely loving the new transparent design! It really makes the background video pop.
+                        Testing out the feed functionality—excited to see this platform grow! #FrostedGlass #FLEXIFY
+                    </p>
+
+                    <!-- Post Stats (Like Count, etc.) -->
+                    <div class="flex justify-between items-center text-sm text-gray-300 border-t border-b border-white/10 py-2">
+                        <span>👍 15 Likes</span>
+                        <span>2 Comments · 1 Share</span>
+                    </div>
+
+                    <!-- Post Actions (Like, Comment, Share) -->
+                    <div class="flex justify-around text-sm font-semibold mt-2">
+                        <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 dark:hover:bg-black/20 flex-1 justify-center">
+                            <i class="text-blue-300 text-xl">👍</i>
+                            <span>Like</span>
+                        </button>
+                        <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 dark:hover:bg-black/20 flex-1 justify-center">
+                            <i class="text-gray-300 text-xl">💬</i>
+                            <span>Comment</span>
+                        </button>
+                        <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 dark:hover:bg-black/20 flex-1 justify-center">
+                            <i class="text-green-300 text-xl">↪️</i>
+                            <span>Share</span>
+                        </button>
+                    </div>
+
+                </div>
+                <!-- END SAMPLE POST 1 -->
+
+                <!-- START SAMPLE POST 2 (Minimalist) -->
+                <div class="bg-white/10 dark:bg-gray-900/40 frosted-glass border border-white/20 dark:border-gray-700/50 rounded-xl shadow-xl p-4 text-white">
+
+                    <!-- Post Header -->
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="h-12 w-12 rounded-full flex items-center justify-center bg-indigo-500 text-white font-bold text-xl">
+                            B
+                        </div>
+                        <div>
+                            <p class="font-bold text-white">Roberto</p>
+                            <p class="text-xs text-gray-300/70">5 hours ago <span class="ml-1">🔒</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Post Body/Content -->
+                    <p class="text-gray-200 mb-4 leading-relaxed">
+                        Just finished my morning coffee ☕. Ready to code some more elegant UI/UX this week!
+                    </p>
+
+                    <!-- Post Actions (Simplified) -->
+                    <div class="flex justify-around text-sm font-semibold mt-2 border-t border-white/10 pt-2">
+                        <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 dark:hover:bg-black/20 flex-1 justify-center">
+                            <i class="text-blue-300 text-xl">👍</i>
+                            <span>Like (99)</span>
+                        </button>
+                        <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 dark:hover:bg-black/20 flex-1 justify-center">
+                            <i class="text-gray-300 text-xl">💬</i>
+                            <span>Comment (4)</span>
+                        </button>
+                    </div>
+
+                </div>
+                <!-- END SAMPLE POST 2 -->
+            </div>
+            <!-- END EXISTING POSTS FEED -->
+
+        </div>
+
+        <!-- MODAL REMAINS HERE -->
+        <div id="create-post-modal" class="hidden flex fixed inset-0 z-50 items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300">
+
+            <!-- Modal Content - Applying Frosted Glass -->
+            <div class="bg-white/10 dark:bg-gray-900/40 frosted-glass border border-white/20 dark:border-gray-700/50 rounded-lg shadow-2xl w-full max-w-lg mx-4 overflow-hidden transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
+
+                <div class="relative p-4 border-b border-white/10 dark:border-gray-600/50">
+                    <h2 class="text-xl font-bold text-center text-white">Create Post</h2>
+                    <button id="close-post-modal" class="absolute top-3 right-3 p-2 bg-white/10 dark:bg-black/30 rounded-full text-white hover:bg-white/20 dark:hover:bg-black/50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="p-4">
+
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="h-10 w-10 rounded-full flex items-center justify-center bg-white/30 text-white font-bold text-lg">
+                            UN
+                        </div>
+                        <div>
+                            <p class="font-bold text-white">User Name</p>
+                            <button class="flex items-center space-x-1 text-xs bg-white/10 dark:bg-black/20 p-1 px-2 rounded-lg font-semibold text-white hover:bg-white/20 dark:hover:bg-black/40">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.23 2.23a1 1 0 001.414-1.414L11 9.586V6z" clip-rule="evenodd" /></svg>
+                                <span>Friends</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <textarea id="post-text-area" rows="4" placeholder="What's on your mind, User?" class="w-full text-lg resize-none outline-none bg-transparent text-white placeholder-white/70"></textarea>
+
+                    <div class="flex items-center justify-between border border-white/10 dark:border-gray-600/50 p-3 rounded-lg mt-4">
+                        <p class="font-semibold text-white">Add to your Post</p>
+                        <div class="flex space-x-2">
+                            <button class="p-2 rounded-full hover:bg-white/10 dark:hover:bg-black/20 transition duration-150">
+                                <i class="text-green-500 text-2xl">🖼️</i>
+                            </button>
+                            <button class="p-2 rounded-full hover:bg-white/10 dark:hover:bg-black/20 transition duration-150">
+                                <i class="text-blue-500 text-2xl">👤</i>
+                            </button>
+                            <button class="p-2 rounded-full hover:bg-white/10 dark:hover:bg-black/20 transition duration-150">
+                                <i class="text-yellow-500 text-2xl">😊</i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button id="post-button" disabled class="w-full mt-4 p-2 text-white bg-blue-400 rounded-lg font-bold cursor-not-allowed transition duration-300">
+                        Post
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="logout-confirmation-modal" class="hidden flex fixed inset-0 z-50 items-center justify-center bg-black bg-black bg-opacity-50 transition-opacity duration-300">
+
+          <div id="logout-modal-content" class="bg-white/10 dark:bg-gray-900/40 frosted-glass border border-white/20 dark:border-gray-700/50 rounded-lg shadow-2xl w-full max-w-sm mx-4 overflow-hidden p-6 transform transition duration-300 scale-95 opacity-0">
+            <div class="text-center text-white space-y-4">
+              <p class="text-xl font-semibold">Are you sure you want to logout?</p>
+            </div>
+
+            <div class="flex justify-center space-x-4 mt-6">
+
+              <button id="confirm-logout-yes" class="px-6 py-2 text-sm font-bold text-white bg-red-600 rounded-full hover:bg-red-700 transition duration-200 shadow-lg focus:outline-none focus:ring-4 focus:ring-red-500/50">
+                Yes
+              </button>
+
+              <button id="confirm-logout-no" class="px-6 py-2 text-sm font-bold text-white bg-red-600 rounded-full hover:bg-red-700 transition duration-200 shadow-lg focus:outline-none focus:ring-4 focus:ring-red-500/50">
+                No
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+    </section>
+
+    <script>
+        // --- Modal Element Selectors ---
+        const openModalButton = document.getElementById('open-post-modal');
+        const closeModalButton = document.getElementById('close-post-modal');
+        const postModal = document.getElementById('create-post-modal');
+        const modalContent = document.getElementById('modal-content');
+        const postTextArea = document.getElementById('post-text-area');
+        const postButton = document.getElementById('post-button');
+        const logoutButton = document.getElementById('logout-button');
+
+        //--- NEW LOGOUT MODAL SELECTOR ---
+        const logoutConfirmationModal = document.getElementById('logout-confirmation-modal');
+        const logoutModalContent = document.getElementById('logout-modal-content');
+        const confirmLogoutYes = document.getElementById('confirm-logout-yes');
+        const confirmLogoutNo = document.getElementById('confirm-logout-no');
+
+        //--- NEW FEELING/ACTIVITY SELECTOR --
+        const feelingActivityButton = document.getElementById('feeling-activity-button');
+        const feelingActivityDropdown = document.getElementById('feeling-activity-dropdown');
+        const dropdownOptions = document.querySelectorAll('.dropdown-option');
+
+
+
+        //--- NEW LOGOUT MODAL FUNCTIONS ---
+        function openLogoutModal() {
+          logoutConfirmationModal.classList.remove('hidden');
+          setTimeout(() => {
+            logoutConfirmationModal.classList.add('opacity-100');
+            logoutModalContent.classList.add('scale-100', 'opacity-100');
+            logoutModalContent.classList.remove('scale-95', 'opacity-0');
+          }, 10);
+        }
+
+        function closeLogoutModal() {
+          logoutConfirmationModal.classList.remove('opacity-100');
+          logoutModalContent.classList.add('scale95', 'opacity-0');
+          logoutModalContent.classList.remove('scale-100');
+
+          setTimeout(() => {
+            logoutConfirmationModal.classList.add('hidden');
+          }, 300);
+        }
+
+        //--- NEW FEELING/ACTIVITY LOGIC ---
+        if (feelingActivityButton) {
+          feelingActivityButton.addEventListener('click', function(e) => {
+            e.stopPropagation();
+            feelingActivityDropdown.classList.toggle('hidden');
+          })
+        }
+
+        dropdownOptions.forEach(option => {
+          option.addEventListener('click', function(e) => {
+            e.stopPropagation();
+
+            const selectedText = option.textContent.trim();
+            const selectedEmoji = option.querySelector('i').textContent.trim();
+
+            openModal();
+            postTextArea.value = `- feeling${selectedText} ${selectedEmoji}`;
+            postTextArea.dispatchEvent(new Event('input'));
+
+            feelingActivityDropdown.classList.add('hidden');
+          });
+        });
+
+        document.addEventListener('click', function(e) => {
+          if (feelingActivityDropdown && !feelingActivityDropdown.classList.contains('hidden') && !feelingActivityButton.contains(e.target)) {
+              feelingActivityDropdown.classList.add('hidden');
+          }
+        });
+        // --END OF FEELING/ACTIVITY LOGIC ---
+
+
+        if (logoutButton) {
+          logoutButton.addEventListener('click', openLogoutModal);
+        } else {
+            console.error("Error: Logout button with ID 'logout-button' not found.");
+        }
+
+        //NEW LOGOUT MODAL EVENT LISTENER ---
+        if (confirmLogoutYes) {
+          confirmLogoutYes.addEventListener('click', function() {
+            window.location.href = '/';
+          });
+        }
+
+        if (confirmLogoutNo) {
+          confirmLogoutNo.addEventListener('click', closeLogoutModal);
+        }
+
+        logoutConfirmationModal.addEventListener('click', (e) => {
+
+          if (e.target === logoutConfirmationModal) {
+            closeLogoutModal();
+          }
+
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === "Escape" && !logoutConfirmationModal.classList.contains('hidden')) {
+            closeLogoutModal();
+          }
+        })
+
+        // --- Modal Functionality ---
+        function openModal() {
+            postModal.classList.remove('hidden');
+
+            setTimeout(() => {
+                postModal.classList.add('opacity-100');
+                modalContent.classList.add('scale-100', 'opacity-100');
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                postTextArea.focus();
+            }, 10);
+        }
+
+        function closeModal() {
+            postModal.classList.remove('opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            modalContent.classList.remove('scale-100');
+
+            setTimeout(() => {
+                postModal.classList.add('hidden');
+            }, 300);
+        }
+
+        // --- Post Button Logic ---
+        postTextArea.addEventListener('input', function() {
+            if(this.value.trim().length > 0) {
+                postButton.disabled = false;
+                postButton.classList.remove('bg-blue-400', 'cursor-not-allowed');
+                postButton.classList.add('bg-blue-500', 'hover:bg-blue-600', 'cursor-pointer');
+            }else {
+                postButton.disabled = true;
+                postButton.classList.add('bg-blue-400', 'cursor-not-allowed');
+                postButton.classList.remove('bg-blue-500', 'hover:bg-blue-600', 'cursor-pointer')
+            }
+        });
+
+        postButton.addEventListener('click', function() {
+            const postContent = postTextArea.value.trim();
+            if(postContent) {
+                console.log("Post Submitted! Content: \n" + postContent);
+                postTextArea.value = '';
+                postTextArea.dispatchEvent(new Event('input'));
+                closeModal();
+            }
+        })
+
+        // --- Event Listeners ---\n
+        openModalButton.addEventListener('click', openModal);
+        closeModalButton.addEventListener('click', closeModal);
+
+        postModal.addEventListener('click', (e) => {
+            if(e.target === postModal) {
+                closeModal();
+            }
+        })
+
+        document.addEventListener('keydown', (e) => {
+            if(e.key === "Escape" && !postModal.classList.contains('hidden')) {
+                closeModal();
+            }
+        })
+    </script>
+</body>
+</html>

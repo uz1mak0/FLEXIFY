@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <title>FLEXIFY - Login</title>
+
+    <style>
+        .frosted-glass {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .login-input:focus {
+            --tw-ring-color: #60a5fa;
+        }
+    </style>
+</head>
+<body class="dark">
+
+    <section class="showcase relative min-h-screen flex justify-center items-center bg-gray-100 dark:bg-gray-900">
+
+        <video src="/smoke.mp4" muted loop autoplay class="absolute top-0 left-0 w-full h-full object-cover"></video>
+
+        <div class="w-full max-w-sm bg-white/10 dark:bg-gray-900/40 frosted-glass border border-white/20 dark:border-gray-700/50 round-xl shadow-2xl p-6 md:p-8 text-white">
+
+            <div class="text-center mb-8">
+                <h1 class="text-5xl font-extrabold tracking-widest text-white mb-2" style="font-family: 'Bitcount Prop Single Ink', sans-serif;">
+                    FLEXIFY
+                </h1>
+                
+            </div>
+
+            <form action="/home" method="POST" id="login-form" class="space-y-4">
+
+                <div>
+                    <label for="email" class="sr-only">Email Address</label>
+                    <input type="email" id="email" name="email" autocomplete="email" required
+                    class="login-input appearance-none relative block w-full px-4 py-3 border border-white/30 dark:border-gray-600 rounded-lg bg-black/30 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-200"
+                    placeholder="Email Address">
+                </div>
+
+                <div>
+                    <label for="password" class="sr-only">password</label>
+                    <input id="password" name="password" type="password" autocomplete="current-password" required
+                    class="login-input appearance-none relative block w-full px-4 py-3 border border-white/30 dark:border-gray-600 rounded-lg bg-black/30 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-200"
+                    placeholder="Password">
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="text-sm">
+                        <a href="#" class="font-medium text-blue-400 hover:text-blue-300 transition duration-150">
+                            Forgot your password?
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" class="group relative w-full flex justify-center p-3 px-4 border border-transparent text-lg font-bold rounded-lg text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200">
+                        Sign In
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-6 text-center text-sm">
+                <p class="text-gray-300">
+                    Don't have an account?
+                    <a href="#" class="font-medium text-blue-400 hover:text-blue-300 transition duration-150">
+                        Sign up here!
+                    </a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div id="loader-overlay" class="fixed inset-0 z-50 bg-gray-900/90 hidden flex justify-center items-center backdrop-blur-sm transition-opacity duration-300 opacity-0">
+      <div class="loader-content flex flex-col items-center">
+        <div class="w-16 h-16 rounded-full bg-blue-500 animate-ping absolute"></div>
+        <div class="w-16 h-16 rounded-full bg-blue-600 opacity-75"></div>
+
+        <p class="mt-8 text-xl font-semibold text-white tracking-wider">FLEXIFY</p>
+      </div>
+    </div>
+
+    <script>
+      const loginForm = document.querySelector('form');
+      const loaderOverlay = document.getElementById('loader-overlay');
+
+      function showLoader() {
+        loaderOverlay.classList.remove('hidden');
+
+        setTimeout(() => {
+          loaderOverlay.classList.add('opacity-100');
+        }, 10);
+      }
+
+      function hideLoader() {
+
+        loaderOverlay.classList.remove('opacity-100');
+
+        setTimeout(() => {
+          loaderOverlay.classList.add('hidden');
+        }, 300);
+      }
+
+      loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        showLoader();
+
+        fetch('/home', {
+          method: 'POST',
+          body: new FormData(loginForm)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success && data.redirect) {
+            setTimeout(() => {
+              window.location.href = data.redirect;
+            }, 1500);
+          }else {
+            alert('Login failed. Please try again.');
+            hideLoader();
+          }
+        })
+        .catch(error => {
+          console.error('Network Error: ', error);
+          alert('An error occurred during login.');
+          hideLoader();
+        });
+      });
+    </script>
+</body>
+</html>
