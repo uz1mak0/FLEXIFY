@@ -62,7 +62,9 @@ const server = http.createServer((req, res) => {
         filePath = path.join(process.cwd(), 'src', 'page', 'login.html');
     }else if(pathname === '/home'){
         filePath = path.join(process.cwd(), 'src', 'page', 'index.html');
-    }else{
+    }else if(pathname === '/register'){
+        filePath = path.join(process.cwd(), 'src', 'page', 'register.html');
+    }else {
         filePath = path.join(STATIC_ROOT, req.url);
     }
 

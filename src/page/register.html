@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <title>FLEXIFY - Sign up</title>
+    <style>
+        .frosted-glass {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .login-input:focus {
+            --tw-ring-color: #60a5fa;
+        }
+    </style>
+  </head>
+  <body class="dark">
+    <section class="showcase relative min-h-screen flex justify-center items-center bg-gray-100 dark:bg-gray-900">
+      <video src="/star.mp4" muted loop autoplay class="fixed top-0 left-0 w-full h-full object-cover"></video>
+      <div class="text-center mb-8">
+        <h1 class="text-5xl font-extrabold tracking-widest text-white mb-2" style="font-family: 'Bitcount Prop Single Ink', sans-serif">
+          FLEXIFY
+        </h1>
+        <h2 class="text-2xl font-semibold text-gray-300">
+          Create your Account
+        </h2>
+      </div>
+
+        <form action="/home" for="name" class="space-y-4" id="register-form" method="POST">
+          <div>
+            <label for="name" class="sr-only">User name</label>
+            <input type="text" id="name" name="name" autocomplete="name" required placeholder="User Name"
+            class="login-input appearance-none relative blockquote block w-full px-4 py-3 border border-wwhite/30 dark:border-gray-600 rounded-b-lg bg-black/30 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-200">
+          </div>
+
+          <div>
+            <label for="email" class="sr-only">Email Address</label>
+            <input type="email" name="" id="email" autocomplete="email" required
+            class="login-input appearance-none relative block w-full px-4 py-3 border border-white/30 dark:border-gray-600 rounded-lg bg-black/30 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-200"
+            placeholder="Email Address">
+          </div>
+
+          <div>
+            <label for="password" class="sr-only">Password</label>
+            <input id="password" name="password" type="password" autocomplete="new-password" required
+            class="login-input appearance-none relative block w-full px-4 py-3 border border-white/30 dark:border-gray-600 rounded-lg bg-black/30 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-200"
+            placeholder="Password">
+          </div>
+
+          <div>
+            <label for="confirm-password" class="sr-only">Confirm Password</label>
+            <input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password" required
+            class="login-input appearance-none relative block w-full px-4 py-3 border border-white/30 dark:border-gray-600 rounded-lg bg-black/30 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-200"
+            placeholder="Confirm Password">
+          </div>
+
+          <div>
+            <button type="submit" class="group relative w-full flex justify-center p-3 px-4 border border-transparent text-lg font-bold rounded-lg text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200">
+              Sign Up
+            </button>
+          </div>
+        </form>
+
+        <div class="mt-6 text-center text-sm">
+          <p class="text-gray-300">
+            Already have an account?
+            <a href="/login" class="font-medium text-blue-400 hover:text-blue-300 transition duration-150">
+              Sign in here!
+            </a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div id="loader-overlay" class="fixed inset-0 z-50 bg-gray-900/90 hidden flex justify-center items-center backdrop-blur-sm transition-opacity duration-300 opacity-0">
+      <div class="loader-content flex flex-col items-center">
+        <div class="w-16 h-16 rounded-full bg-blue-500 animate-ping absolute"></div>
+        <div class="w-16 h-16 rounded-full bg-blue-600 opacity-75"></div>
+
+        <p class="mt-8 text-xl font-semibold text-white tracking-wider">FLEXIFY</p>
+      </div>
+    </div>
+
+    <script>
+      const registerForm = document.getElementById('register-form');
+      const loaderOverlay = document.getElementById('loader-overlay');
+
+      function showLoader() {
+        loaderOverlay.classList.remove('hidden');
+
+        setTimeout(() => {
+          loaderOverlay.classList.add('opacity-100');
+        }, 10);
+      }
+
+      function hideLoader() {
+
+        loaderOverlay.classList.remove('opacity-100');
+
+        setTimeout(() => {
+          loaderOverlay.classList.add('hidden');
+        }, 300);
+      }
+
+      // Basic client-side password matching for better user experience
+      registerForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+
+        if (password !== confirmPassword) {
+          alert('Passwords do not match. Please try again.');
+          return;
+        }
+
+        showLoader();
+
+        // NOTE: You'll need to update the fetch URL below to your actual registration endpoint
+        fetch('/register', {
+          method: 'POST',
+          body: new FormData(registerForm)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success && data.redirect) {
+            // Success: redirect user to a login/home page
+            setTimeout(() => {
+              window.location.href = data.redirect;
+            }, 1500);
+          } else if (data.message) {
+            // Handle registration errors (e.g., email already in use)
+            alert(data.message);
+            hideLoader();
+          } else {
+            alert('Registration failed. Please try again.');
+            hideLoader();
+          }
+        })
+        .catch(error => {
+          console.error('Network Error: ', error);
+          alert('An error occurred during registration.');
+          hideLoader();
+        });
+      });
+    </script>
+  </body>
+</html>

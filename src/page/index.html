@@ -36,7 +36,7 @@
 
         </header>
 
-        <video src="/smoke.mp4" muted loop autoplay class="absolute top-0 left-0 w-full h-full object-cover"></video>
+        <video src="/star.mp4" muted loop autoplay class="fixed top-0 left-0 w-full h-full object-cover"></video>
 
         <!-- MAIN CONTENT CONTAINER (Contains Create Post and the Feed) -->
         <div class="main-content relative z-10 w-full flex flex-col items-center pt-20 p-4 space-y-6">
@@ -46,57 +46,27 @@
 
                 <!-- THE CLICKABLE AREA: open-post-modal -->
                 <div class="flex items-center space-x-3 mb-3 border-b border-white/10 dark:border-gray-600/50 pb-3 cursor-pointer" id="open-post-modal">
-                    <div class="h-10 w-10 rounded-full object-cover flex items-center justify-center bg-white/30 text-white font-bold text-lg">
-                        UN
-                    </div>
                     <div class="flex-1 bg-white/5 dark:bg-black/20 p-2 rounded-full text-white dark:text-gray-300 hover:bg-white/10 dark:hover:bg-black/30 transition duration-150">
-                        What's on your mind, User?
+                      Share your thoughts?
                     </div>
                 </div>
 
                 <div class="flex justify-around text-sm font-semibold text-white dark:text-gray-300">
-                    <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 dark:hover:bg-black/20 flex-1 justify-center">
+                    <!-- <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 dark:hover:bg-black/20 flex-1 justify-center">
                         <i class="text-red-400 text-xl">📸</i>
                         <span>Live video</span>
-                    </button>
-                    <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 dark:hover:bg-black/20 flex-1 justify-center">
+                    </button> -->
+                    <button class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 dark:hover:bg-black/20 flex-1">
                         <i class="text-green-500 text-xl">🖼️</i>
                         <span>Photo/video</span>
                     </button>
-                    <div class="relative flex-l justify-center">
+                    
                       <button
-                        id="feeling-activity-button"
-                        class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 dark:hover:bg-black/20 w-full justify-center">
+                        id="open-feeling-activity-button"
+                        class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 dark:hover:bg-black/20 flex-1 justify-center">
                         <i class="text-yellow-500 text-xl">😊</i>
                         <span>Feeling/activity</span>
                       </button>
-
-                      <div id="feeling-activity-dropdown" class="hidden absolute left-0 right-0 mt-2 z-40 bg-gray-800/90 frosted-glass border border-white/10 rounded-lg shadow-2xl p-2 text-white/90">
-                          <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-400">Feelings:</div>
-                            <button class="dropdown-option flex items-center space-x-2 w-full p-2 rounded-md hover:bg-white/10 transition duration-150">
-                                <i class="text-2xl">😃</i>
-                                  <span>Happy</span>
-                            </button>
-                            <button class="dropdown-option flex items-center space-x-2 w-full p-2 rounded-md hover:bg-white/10 transition duration-150">
-                                <i class="text-2xl">😴</i>
-                                  <span>Tired</span>
-                            </button>
-                            <button class="dropdown-option flex items-center space-x-2 w-full p-2 rounded-md hover:bg-white/10 transition duration-150">
-                                <i class="text-2xl">🥳</i>
-                                  <span>Celebratory</span>
-                            </button>
-
-                      <div class="px-2 py-1 mt-2 text-xs font-semibold uppercase text-gray-400 border-t border-white/10 pt-2">Activities:</div>
-                            <button class="dropdown-option flex items-center space-x-2 w-full p-2 rounded-md hover:bg-white/10 transition duration-150">
-                              <i class="text-2xl">🎮</i>
-                                <span>Playing Games</span>
-                            </button>
-                            <button class="dropdown-option flex items-center space-x-2 w-full p-2 rounded-md hover:bg-white/10 transition duration-150">
-                              <i class="text-2xl">🎧</i>
-                                <span>Listening to Music</span>
-                            </button>
-                      </div>
-                    </div>
                 </div>
             </div>
 
@@ -203,20 +173,12 @@
                 <div class="p-4">
 
                     <div class="flex items-center space-x-3 mb-4">
-                        <div class="h-10 w-10 rounded-full flex items-center justify-center bg-white/30 text-white font-bold text-lg">
-                            UN
-                        </div>
                         <div>
                             <p class="font-bold text-white">User Name</p>
-                            <button class="flex items-center space-x-1 text-xs bg-white/10 dark:bg-black/20 p-1 px-2 rounded-lg font-semibold text-white hover:bg-white/20 dark:hover:bg-black/40">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.23 2.23a1 1 0 001.414-1.414L11 9.586V6z" clip-rule="evenodd" /></svg>
-                                <span>Friends</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
-                            </button>
                         </div>
                     </div>
 
-                    <textarea id="post-text-area" rows="4" placeholder="What's on your mind, User?" class="w-full text-lg resize-none outline-none bg-transparent text-white placeholder-white/70"></textarea>
+                    <textarea id="post-text-area" rows="4" placeholder="What's on your mind?" class="w-full text-lg resize-none outline-none bg-transparent text-white placeholder-white/70"></textarea>
 
                     <div class="flex items-center justify-between border border-white/10 dark:border-gray-600/50 p-3 rounded-lg mt-4">
                         <p class="font-semibold text-white">Add to your Post</p>
@@ -235,6 +197,47 @@
 
                     <button id="post-button" disabled class="w-full mt-4 p-2 text-white bg-blue-400 rounded-lg font-bold cursor-not-allowed transition duration-300">
                         Post
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="feeling-activity-modal" class="hidden flex fixed inset-0 z-[60] items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300">
+
+            <div class="bg-white/10 dark:bg-gray-900/40 frosted-glass border border-white/20 dark:border-gray-700/50 rounded-lg shadow-2xl w-full max-w-md mx-4 overflow-hidden transform transition-all duration-300 scale-95 opacity-0" id="feeling-activity-modal-content">
+
+                <div class="relative p-4 border-b border-white/10 dark:border-gray-600/50">
+                    <h2 class="text-xl font-bold text-center text-white">How are you feeling?</h2>
+                    <button id="close-feeling-activity-modal" class="absolute top-3 right-3 p-2 bg-white/10 dark:bg-black/30 rounded-full text-white hover:bg-white/20 dark:hover:bg-black/50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="p-4 space-y-2">
+                    <p class="px-2 py-1 text-sm font-semibold uppercase text-gray-400">Feelings:</p>
+                    <button class="feeling-option flex items-center space-x-2 w-full p-2 rounded-md text-white/90 hover:bg-white/10 transition duration-150" data-type="feeling" data-emoji="😃" data-text="Happy">
+                        <i class="text-2xl">😃</i>
+                        <span>Happy</span>
+                    </button>
+                    <button class="feeling-option flex items-center space-x-2 w-full p-2 rounded-md text-white/90 hover:bg-white/10 transition duration-150" data-type="feeling" data-emoji="😴" data-text="Tired">
+                        <i class="text-2xl">😴</i>
+                        <span>Tired</span>
+                    </button>
+                    <button class="feeling-option flex items-center space-x-2 w-full p-2 rounded-md text-white/90 hover:bg-white/10 transition duration-150" data-type="feeling" data-emoji="🥳" data-text="Celebratory">
+                        <i class="text-2xl">🥳</i>
+                        <span>Celebratory</span>
+                    </button>
+
+                    <p class="px-2 py-1 pt-4 text-sm font-semibold uppercase text-gray-400 border-t border-white/10 mt-2">Activities:</p>
+                    <button class="feeling-option flex items-center space-x-2 w-full p-2 rounded-md text-white/90 hover:bg-white/10 transition duration-150" data-type="activity" data-emoji="🎮" data-text="Playing Games">
+                        <i class="text-2xl">🎮</i>
+                        <span>Playing Games</span>
+                    </button>
+                    <button class="feeling-option flex items-center space-x-2 w-full p-2 rounded-md text-white/90 hover:bg-white/10 transition duration-150" data-type="activity" data-emoji="🎧" data-text="Listening to Music">
+                        <i class="text-2xl">🎧</i>
+                        <span>Listening to Music</span>
                     </button>
                 </div>
             </div>
@@ -277,9 +280,12 @@
 
 
         //--- NEW FEELING/ACTIVITY SELECTOR --
-        const feelingActivityButton = document.getElementById('feeling-activity-button');
-        const feelingActivityDropdown = document.getElementById('feeling-activity-dropdown');
-        const dropdownOptions = document.querySelectorAll('.dropdown-option');
+        const openFeelingActivityButton = document.getElementById('open-feeling-activity-modal');
+        const openFeelingActivityModalFromPostButton = document.getElementById('open-feeling-activity-modal-from-post');
+        const feelingActivityModal = document.getElementById('feeling-activity-modal');
+        const closeFeelingActivityModalButton = document.getElementById('close-feeling-activity-modal');
+        const feelingActivityModalContent = document.getElementById('feeling-activity-modal-content');
+        const feelingOptions = document.querySelectorAll('.feeling-option');
 
 
         //--- NEW LOGOUT MODAL SELECTOR ---
@@ -289,6 +295,78 @@
         const confirmLogoutNo = document.getElementById('confirm-logout-no');
 
 
+        // --- Feeling/Activity Modal Functions ---
+        function openFeelingActivityModal() {
+            feelingActivityModal.classList.remove('hidden');
+            setTimeout(() => {
+                feelingActivityModal.classList.add('opacity-100');
+                feelingActivityModalContent.classList.add('scale-100', 'opacity-100');
+                feelingActivityModalContent.classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        }
+
+        function closeFeelingActivityModal() {
+            feelingActivityModal.classList.remove('opacity-100');
+            feelingActivityModalContent.classList.add('scale-95', 'opacity-0');
+            feelingActivityModalContent.classList.remove('scale-100');
+
+            setTimeout(() => {
+                feelingActivityModal.classList.add('hidden');
+            }, 300);
+        }
+
+        if (openFeelingActivityButton) {
+             openFeelingActivityButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            openFeelingActivityModal();
+        })
+}
+
+        // --- button for opening feeling modal from inside create post modal ---
+        if (openFeelingActivityModalFromPostButton) {
+            openFeelingActivityModalFromPostButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                openFeelingActivityModal();
+                closeModal();
+            })
+        }
+
+        if (closeFeelingActivityModalButton) {
+            closeFeelingActivityModalButton.addEventListener('click', closeFeelingActivityModal);
+        }
+
+        feelingActivityModal.addEventListener('click', (e) => {
+            if (e.target == feelingActivityModal) {
+                closeFeelingActivityModal();
+            }
+        })
+
+        //selection logic
+        feelingOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                    const type = this.getAttribute('data-type');
+                    const text = this.getAttribute('data-text');
+                    const emoji = this.getAttribute('emoji');
+
+                    const prefix = (type === 'feeling') ? `- feeling ${text} ${emoji}` : `-is ${text.toLowerCase()} ${emoji}`;
+
+                    postTextArea.value = prefix;
+
+                    closeFeelingActivityModal();
+
+                    openModal();
+
+
+                    postTextArea.dispatchEvent(new Event('input'));
+            });
+        });
+
+        // --- escape key for feeling/activity modal ---
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape" && !feelingActivityModal.classList.contains('hidden')) {
+                closeFeelingActivityModal();
+            }
+        });
 
         //--- NEW LOGOUT MODAL FUNCTIONS ---
         function openLogoutModal() {
@@ -344,33 +422,33 @@
 
 
         //--- NEW FEELING/ACTIVITY LOGIC ---
-        if (feelingActivityButton) {
-          feelingActivityButton.addEventListener('click', function(e) {
-            e.stopPropagation();
-            feelingActivityDropdown.classList.toggle('hidden');
-          })
-        }
+        // if (feelingActivityButton) {
+        //   feelingActivityButton.addEventListener('click', function(e) {
+        //     e.stopPropagation();
+        //     feelingActivityDropdown.classList.toggle('hidden');
+        //   })
+        // }
 
-        dropdownOptions.forEach(option => {
-          option.addEventListener('click', function(e) {
-            e.stopPropagation();
+        // dropdownOptions.forEach(option => {
+        //   option.addEventListener('click', function(e) {
+        //     e.stopPropagation();
 
-            const selectedText = option.textContent.trim();
-            const selectedEmoji = option.querySelector('i').textContent.trim();
+        //     const selectedText = option.textContent.trim();
+        //     const selectedEmoji = option.querySelector('i').textContent.trim();
 
-            openModal();
-            postTextArea.value = `- feeling${selectedText} ${selectedEmoji}`;
-            postTextArea.dispatchEvent(new Event('input'));
+        //     openModal();
+        //     postTextArea.value = `- feeling${selectedText} ${selectedEmoji}`;
+        //     postTextArea.dispatchEvent(new Event('input'));
 
-            feelingActivityDropdown.classList.add('hidden');
-          });
-        });
+        //     feelingActivityDropdown.classList.add('hidden');
+        //   });
+        // });
 
-        document.addEventListener('click', function(e) {
-          if (feelingActivityDropdown && !feelingActivityDropdown.classList.contains('hidden') && !feelingActivityButton.contains(e.target)) {
-              feelingActivityDropdown.classList.add('hidden');
-          }
-        });
+        // document.addEventListener('click', function(e) {
+        //   if (feelingActivityDropdown && !feelingActivityDropdown.classList.contains('hidden') && !feelingActivityButton.contains(e.target)) {
+        //       feelingActivityDropdown.classList.add('hidden');
+        //   }
+        // });
         // --END OF FEELING/ACTIVITY LOGIC ---
 
 
