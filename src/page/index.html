@@ -57,22 +57,9 @@
                 </div>
 
                 <div class="flex justify-around text-sm font-semibold text-white dark:text-gray-300">
-                    <!-- <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 dark:hover:bg-black/20 flex-1 justify-center">
-                        <i class="text-red-400 text-xl">📸</i>
-                        <span>Live video</span>
-                    </button> -->
-                    <button id="upload-photo-video-button" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 dark:hover:bg-black/20 flex-1">
-                        <i class="text-green-500 text-xl">🖼️</i>
-                        <span>Photo/video</span>
-                    </button>
+                   
                     <input type="file" id="file-input" accept="image/*,video/*" multiple class="hidden">
                     
-                      <button
-                        id="open-feeling-activity-button"
-                        class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 dark:hover:bg-black/20 flex-1 justify-center">
-                        <i class="text-yellow-500 text-xl">😊</i>
-                        <span>Feeling/activity</span>
-                      </button>
                 </div>
             </div>
 
@@ -180,11 +167,30 @@
 
                     <div class="flex items-center space-x-3 mb-4">
                         <div>
-                            <p class="font-bold text-white">User Name</p>
+                            <p class="font-bold text-white">User Name
+                                <span id="selected-feeling-display" class="font-normal text-gray-300 ml-1 hidden"></span>
+                            </p>
                         </div>
                     </div>
 
-                    <textarea id="post-text-area" rows="4" placeholder="What's on your mind?" class="w-full text-lg resize-none outline-none bg-transparent text-white placeholder-white/70"></textarea>
+                    <div class="relative mt-2">
+                        <textarea id="post-text-area" rows="4" placeholder="What's on your mind?" class="w-full text-lg resize-none outline-none bg-transparent text-white placeholder-white/70 pr-10 pb-8"></textarea>
+                        <button id="emoji-picker-trigger" type="button" class="absolute right-1 bottom-2 p-1 hover:bg-white/10 rounded-full transition duration-150 text-xl" title="Insert Emoji">
+                            😀
+                        </button>
+                    </div>
+                    
+
+                    <div id="emoji-mini-menu" class="hidden absolute right-0 bottom-12 z-50 bg-gray-800/90 border border-white/20 rounded-lg p-3 shadow-2xl frosted-glass w-48">
+                        <span class="emoji-select cursor-pointer hover:scale-125 transition text-center">😀</span>
+                        <span class="emoji-select cursor-pointer hover:scale-125 transition text-center">😂</span>
+                        <span class="emoji-select cursor-pointer hover:scale-125 transition text-center">😍</span>
+                        <span class="emoji-select cursor-pointer hover:scale-125 transition text-center">🔥</span>
+                        <span class="emoji-select cursor-pointer hover:scale-125 transition text-center">👍</span>
+                        <span class="emoji-select cursor-pointer hover:scale-125 transition text-center">🎉</span>
+                        <span class="emoji-select cursor-pointer hover:scale-125 transition text-center">✨</span>
+                        <span class="emoji-select cursor-pointer hover:scale-125 transition text-center">💙</span>
+                    </div>
 
                     <!-- Media Preview Container -->
                     <div id="media-preview-container" class="mt-4 hidden">
@@ -195,13 +201,10 @@
                         <p class="font-semibold text-white">Add to your Post</p>
                         <div class="flex space-x-2">
                             <button id="upload-photo-video-modal-button" class="p-2 rounded-full hover:bg-white/10 dark:hover:bg-black/20 transition duration-150">
-                                <i class="text-green-500 text-2xl">🖼️</i>
+                                <span class="text-green-500 text-2xl">🖼️</span>
                             </button>
-                            <button class="p-2 rounded-full hover:bg-white/10 dark:hover:bg-black/20 transition duration-150">
-                                <i class="text-blue-500 text-2xl">👤</i>
-                            </button>
-                            <button class="p-2 rounded-full hover:bg-white/10 dark:hover:bg-black/20 transition duration-150">
-                                <i class="text-yellow-500 text-2xl">😊</i>
+                            <button id="open-feeling-activity-modal-from-post" class="p-2 rounded-full hover:bg-white/10 dark:hover:bg-black/20 transition duration-150">
+                                <span class="text-yellow-500 text-2xl">😊</span>
                             </button>
                         </div>
                     </div>
@@ -254,7 +257,7 @@
             </div>
         </div>
 
-        <div id="logout-confirmation-modal" class="hidden flex fixed inset-0 z-50 items-center justify-center bg-black bg-black bg-opacity-50 transition-opacity duration-300">
+        <div id="logout-confirmation-modal" class="hidden flex fixed inset-0 z-50 items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300">
 
           <div id="logout-modal-content" class="bg-white/10 dark:bg-gray-900/40 frosted-glass border border-white/20 dark:border-gray-700/50 rounded-lg shadow-2xl w-full max-w-sm mx-4 overflow-hidden p-6 transform transition duration-300 scale-95 opacity-0">
             <div class="text-center text-white space-y-4">
@@ -279,404 +282,208 @@
 
     </section>
 
-    <script>
-        // --- Modal Element Selectors ---
+   <script>
+        // --- 1. Element Selectors ---
         const openModalButton = document.getElementById('open-post-modal');
-        const closeModalButton = document.getElementById('close-post-modal');
-        const postModal = document.getElementById('create-post-modal');
-        const modalContent = document.getElementById('modal-content');
-        const postTextArea = document.getElementById('post-text-area');
-        const postButton = document.getElementById('post-button');
-        const logoutButton = document.getElementById('logout-button');
-        const fileInput = document.getElementById('file-input');
-        const uploadPhotoVideoButton = document.getElementById('upload-photo-video-button');
-        const uploadPhotoVideoModalButton = document.getElementById('upload-photo-video-modal-button');
-        const mediaPreviewContainer = document.getElementById('media-preview-container');
-        const mediaPreviewGrid = document.getElementById('media-preview-grid');
+    const closeModalButton = document.getElementById('close-post-modal');
+    const postModal = document.getElementById('create-post-modal');
+    const modalContent = document.getElementById('modal-content');
+    const postTextArea = document.getElementById('post-text-area');
+    const postButton = document.getElementById('post-button');
+    const logoutButton = document.getElementById('logout-button');
+    const fileInput = document.getElementById('file-input');
+    const uploadPhotoVideoButton = document.getElementById('upload-photo-video-button');
+    const uploadPhotoVideoModalButton = document.getElementById('upload-photo-video-modal-button');
+    const mediaPreviewContainer = document.getElementById('media-preview-container');
+    const mediaPreviewGrid = document.getElementById('media-preview-grid');
+
+    const feelingActivityModal = document.getElementById('feeling-activity-modal');
+    const feelingActivityModalContent = document.getElementById('feeling-activity-modal-content');
+    const closeFeelingActivityModalButton = document.getElementById('close-feeling-activity-modal');
+    const openFeelingActivityModalFromPostButton = document.getElementById('open-feeling-activity-modal-from-post');
+    const feelingOptions = document.querySelectorAll('.feeling-option');
+
+    const logoutConfirmationModal = document.getElementById('logout-confirmation-modal');
+    const logoutModalContent = document.getElementById('logout-modal-content');
+    const confirmLogoutYes = document.getElementById('confirm-logout-yes');
+    const confirmLogoutNo = document.getElementById('confirm-logout-no');
+
+    const emojiTrigger = document.getElementById('emoji-picker-trigger');
+    const emojiMenu = document.getElementById('emoji-mini-menu');
+    const emojiItems = document.querySelectorAll('.emoji-select');
+
+    let selectedFiles = [];
+
+    // --- 2. Modal Utility Functions ---
+    function openModal() {
+        postModal.classList.remove('hidden');
+        setTimeout(() => {
+            postModal.classList.add('opacity-100');
+            modalContent.classList.add('scale-100', 'opacity-100');
+            modalContent.classList.remove('scale-95', 'opacity-0');
+            postTextArea.focus();
+        }, 10);
+    }
+
+    function closeModal() {
+        postModal.classList.remove('opacity-100');
+        modalContent.classList.add('scale-95', 'opacity-0');
+        modalContent.classList.remove('scale-100');
+        setTimeout(() => { postModal.classList.add('hidden'); }, 300);
+    }
+
+    function openFeelingModal() {
+        feelingActivityModal.classList.remove('hidden');
+        setTimeout(() => {
+            feelingActivityModal.classList.add('opacity-100');
+            feelingActivityModalContent.classList.add('scale-100', 'opacity-100');
+            feelingActivityModalContent.classList.remove('scale-95', 'opacity-0');
+        }, 10);
+    }
+
+    function closeFeelingModal() {
+        feelingActivityModal.classList.remove('opacity-100');
+        feelingActivityModalContent.classList.add('scale-95', 'opacity-0');
+        feelingActivityModalContent.classList.remove('scale-100');
+        setTimeout(() => { feelingActivityModal.classList.add('hidden'); }, 300);
+    }
+
+    // --- 3. State Management ---
+    function updatePostButtonState() {
+        const hasText = postTextArea.value.trim().length > 0;
+        const hasFiles = selectedFiles.length > 0;
         
-        // Store selected files
-        let selectedFiles = [];
-
-
-        //--- NEW FEELING/ACTIVITY SELECTOR --
-        const openFeelingActivityButton = document.getElementById('open-feeling-activity-modal');
-        const openFeelingActivityModalFromPostButton = document.getElementById('open-feeling-activity-modal-from-post');
-        const feelingActivityModal = document.getElementById('feeling-activity-modal');
-        const closeFeelingActivityModalButton = document.getElementById('close-feeling-activity-modal');
-        const feelingActivityModalContent = document.getElementById('feeling-activity-modal-content');
-        const feelingOptions = document.querySelectorAll('.feeling-option');
-
-
-        //--- NEW LOGOUT MODAL SELECTOR ---
-        const logoutConfirmationModal = document.getElementById('logout-confirmation-modal');
-        const logoutModalContent = document.getElementById('logout-modal-content');
-        const confirmLogoutYes = document.getElementById('confirm-logout-yes');
-        const confirmLogoutNo = document.getElementById('confirm-logout-no');
-
-
-        // --- Feeling/Activity Modal Functions ---
-        function openFeelingActivityModal() {
-            feelingActivityModal.classList.remove('hidden');
-            setTimeout(() => {
-                feelingActivityModal.classList.add('opacity-100');
-                feelingActivityModalContent.classList.add('scale-100', 'opacity-100');
-                feelingActivityModalContent.classList.remove('scale-95', 'opacity-0');
-            }, 10);
-        }
-
-        function closeFeelingActivityModal() {
-            feelingActivityModal.classList.remove('opacity-100');
-            feelingActivityModalContent.classList.add('scale-95', 'opacity-0');
-            feelingActivityModalContent.classList.remove('scale-100');
-
-            setTimeout(() => {
-                feelingActivityModal.classList.add('hidden');
-            }, 300);
-        }
-
-        if (openFeelingActivityButton) {
-             openFeelingActivityButton.addEventListener('click', function(e) {
-            e.stopPropagation();
-            openFeelingActivityModal();
-        })
-}
-
-        // --- button for opening feeling modal from inside create post modal ---
-        if (openFeelingActivityModalFromPostButton) {
-            openFeelingActivityModalFromPostButton.addEventListener('click', function(e) {
-                e.stopPropagation();
-                openFeelingActivityModal();
-                closeModal();
-            })
-        }
-
-        if (closeFeelingActivityModalButton) {
-            closeFeelingActivityModalButton.addEventListener('click', closeFeelingActivityModal);
-        }
-
-        feelingActivityModal.addEventListener('click', (e) => {
-            if (e.target == feelingActivityModal) {
-                closeFeelingActivityModal();
-            }
-        })
-
-        //selection logic
-        feelingOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                    const type = this.getAttribute('data-type');
-                    const text = this.getAttribute('data-text');
-                    const emoji = this.getAttribute('emoji');
-
-                    const prefix = (type === 'feeling') ? `- feeling ${text} ${emoji}` : `-is ${text.toLowerCase()} ${emoji}`;
-
-                    postTextArea.value = prefix;
-
-                    closeFeelingActivityModal();
-
-                    openModal();
-
-
-                    postTextArea.dispatchEvent(new Event('input'));
-            });
-        });
-
-        // --- escape key for feeling/activity modal ---
-        document.addEventListener('keydown', (e) => {
-            if (e.key === "Escape" && !feelingActivityModal.classList.contains('hidden')) {
-                closeFeelingActivityModal();
-            }
-        });
-
-        //--- NEW LOGOUT MODAL FUNCTIONS ---
-        function openLogoutModal() {
-          logoutConfirmationModal.classList.remove('hidden');
-          setTimeout(() => {
-            logoutConfirmationModal.classList.add('opacity-100');
-            logoutModalContent.classList.add('scale-100', 'opacity-100');
-            logoutModalContent.classList.remove('scale-95', 'opacity-0');
-          }, 10);
-        }
-
-        function closeLogoutModal() {
-          logoutConfirmationModal.classList.remove('opacity-100');
-          logoutModalContent.classList.add('scale-95', 'opacity-0');
-          logoutModalContent.classList.remove('scale-100');
-
-          setTimeout(() => {
-            logoutConfirmationModal.classList.add('hidden');
-          }, 300);
-        }
-
-
-        if (logoutButton) {
-          logoutButton.addEventListener('click', openLogoutModal);
+        if (hasText || hasFiles) {
+            postButton.disabled = false;
+            postButton.classList.remove('bg-blue-400', 'cursor-not-allowed');
+            postButton.classList.add('bg-blue-500', 'hover:bg-blue-600', 'cursor-pointer');
         } else {
-            console.error("Error: Logout button with ID 'logout-button' not found.");
+            postButton.disabled = true;
+            postButton.classList.add('bg-blue-400', 'cursor-not-allowed');
+            postButton.classList.remove('bg-blue-500', 'hover:bg-blue-600', 'cursor-pointer');
         }
+    }
 
-        //NEW LOGOUT MODAL EVENT LISTENER ---
-        if (confirmLogoutYes) {
-          confirmLogoutYes.addEventListener('click', function() {
-            window.location.href = '/';
-          });
-        }
-
-        if (confirmLogoutNo) {
-          confirmLogoutNo.addEventListener('click', closeLogoutModal);
-        }
-
-        logoutConfirmationModal.addEventListener('click', (e) => {
-
-          if (e.target === logoutConfirmationModal) {
-            closeLogoutModal();
-          }
-
-        });
-
-        document.addEventListener('keydown', (e) => {
-          if (e.key === "Escape" && !logoutConfirmationModal.classList.contains('hidden')) {
-            closeLogoutModal();
-          }
-        })
-
-
-        //--- NEW FEELING/ACTIVITY LOGIC ---
-        // if (feelingActivityButton) {
-        //   feelingActivityButton.addEventListener('click', function(e) {
-        //     e.stopPropagation();
-        //     feelingActivityDropdown.classList.toggle('hidden');
-        //   })
-        // }
-
-        // dropdownOptions.forEach(option => {
-        //   option.addEventListener('click', function(e) {
-        //     e.stopPropagation();
-
-        //     const selectedText = option.textContent.trim();
-        //     const selectedEmoji = option.querySelector('i').textContent.trim();
-
-        //     openModal();
-        //     postTextArea.value = `- feeling${selectedText} ${selectedEmoji}`;
-        //     postTextArea.dispatchEvent(new Event('input'));
-
-        //     feelingActivityDropdown.classList.add('hidden');
-        //   });
-        // });
-
-        // document.addEventListener('click', function(e) {
-        //   if (feelingActivityDropdown && !feelingActivityDropdown.classList.contains('hidden') && !feelingActivityButton.contains(e.target)) {
-        //       feelingActivityDropdown.classList.add('hidden');
-        //   }
-        // });
-        // --END OF FEELING/ACTIVITY LOGIC ---
-
-
-        // --- Modal Functionality ---
-        function openModal() {
-            postModal.classList.remove('hidden');
-
-            setTimeout(() => {
-                postModal.classList.add('opacity-100');
-                modalContent.classList.add('scale-100', 'opacity-100');
-                modalContent.classList.remove('scale-95', 'opacity-0');
-                postTextArea.focus();
-            }, 10);
-        }
-
-        function closeModal() {
-            postModal.classList.remove('opacity-100');
-            modalContent.classList.add('scale-95', 'opacity-0');
-            modalContent.classList.remove('scale-100');
-
-            setTimeout(() => {
-                postModal.classList.add('hidden');
-                // Optionally clear media preview when closing modal
-                // clearMediaPreview();
-            }, 300);
-        }
-
-        // --- File Upload Functionality ---
-        function triggerFileInput() {
-            fileInput.click();
-        }
-
-        function handleFileSelect(event) {
-            const files = Array.from(event.target.files);
-            
-            // Filter for images and videos only
-            const validFiles = files.filter(file => {
-                return file.type.startsWith('image/') || file.type.startsWith('video/');
-            });
-
-            // Add new files to selectedFiles array
-            validFiles.forEach(file => {
-                if (!selectedFiles.find(f => f.name === file.name && f.size === file.size)) {
-                    selectedFiles.push(file);
-                }
-            });
-
-            updateMediaPreview();
-            updatePostButtonState();
-            
-            // Open modal if not already open
-            if (postModal.classList.contains('hidden')) {
-                openModal();
-            }
-        }
-
-        function updateMediaPreview() {
-            mediaPreviewGrid.innerHTML = '';
-            
-            if (selectedFiles.length === 0) {
-                mediaPreviewContainer.classList.add('hidden');
-                return;
-            }
-
-            mediaPreviewContainer.classList.remove('hidden');
-
-            // Adjust grid layout based on number of files
-            if (selectedFiles.length === 1) {
-                mediaPreviewGrid.className = 'grid grid-cols-1 gap-2 mb-2';
-            } else if (selectedFiles.length === 2) {
-                mediaPreviewGrid.className = 'grid grid-cols-2 gap-2 mb-2';
-            } else if (selectedFiles.length === 3) {
-                mediaPreviewGrid.className = 'grid grid-cols-2 gap-2 mb-2';
-            } else {
-                mediaPreviewGrid.className = 'grid grid-cols-2 gap-2 mb-2';
-            }
-
-            selectedFiles.forEach((file, index) => {
-                const previewItem = document.createElement('div');
-                previewItem.className = 'relative group';
-                
-                // Special handling for 3rd item in 3-item layout
-                if (selectedFiles.length === 3 && index === 2) {
-                    previewItem.className = 'relative group col-span-2';
-                }
-                
-                const isVideo = file.type.startsWith('video/');
-                const previewHeight = selectedFiles.length === 1 ? 'h-64' : 'h-32';
-                
-                if (isVideo) {
-                    previewItem.innerHTML = `
-                        <video class="w-full ${previewHeight} object-cover rounded-lg border border-white/20" controls>
-                            <source src="${URL.createObjectURL(file)}" type="${file.type}">
-                        </video>
-                        <button class="remove-media absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-7 h-7 flex items-center justify-center text-sm font-bold transition duration-150 shadow-lg z-10" data-index="${index}" title="Remove">
-                            ×
-                        </button>
-                    `;
-                } else {
-                    previewItem.innerHTML = `
-                        <img src="${URL.createObjectURL(file)}" alt="Preview" class="w-full ${previewHeight} object-cover rounded-lg border border-white/20">
-                        <button class="remove-media absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-7 h-7 flex items-center justify-center text-sm font-bold transition duration-150 shadow-lg z-10" data-index="${index}" title="Remove">
-                            ×
-                        </button>
-                    `;
-                }
-                
-                mediaPreviewGrid.appendChild(previewItem);
-            });
-
-            // Add event listeners to remove buttons
-            document.querySelectorAll('.remove-media').forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const index = parseInt(this.getAttribute('data-index'));
-                    removeFile(index);
-                });
-            });
-        }
-
-        function removeFile(index) {
-            selectedFiles.splice(index, 1);
-            updateMediaPreview();
-            updatePostButtonState();
-        }
-
-        function clearMediaPreview() {
-            selectedFiles = [];
-            mediaPreviewGrid.innerHTML = '';
+    // --- 4. File & Media Handling ---
+    function updateMediaPreview() {
+        mediaPreviewGrid.innerHTML = '';
+        if (selectedFiles.length === 0) {
             mediaPreviewContainer.classList.add('hidden');
-            fileInput.value = '';
+            return;
         }
 
-        function updatePostButtonState() {
-            const hasText = postTextArea.value.trim().length > 0;
-            const hasFiles = selectedFiles.length > 0;
+        mediaPreviewContainer.classList.remove('hidden');
+        selectedFiles.forEach((file, index) => {
+            const previewItem = document.createElement('div');
+            previewItem.className = 'relative group';
+            const isVideo = file.type.startsWith('video/');
+            const previewHeight = selectedFiles.length === 1 ? 'h-64' : 'h-32';
             
-            if (hasText || hasFiles) {
-                postButton.disabled = false;
-                postButton.classList.remove('bg-blue-400', 'cursor-not-allowed');
-                postButton.classList.add('bg-blue-500', 'hover:bg-blue-600', 'cursor-pointer');
-            } else {
-                postButton.disabled = true;
-                postButton.classList.add('bg-blue-400', 'cursor-not-allowed');
-                postButton.classList.remove('bg-blue-500', 'hover:bg-blue-600', 'cursor-pointer');
-            }
-        }
-
-        // Event listeners for file upload
-        if (uploadPhotoVideoButton) {
-            uploadPhotoVideoButton.addEventListener('click', function(e) {
-                e.stopPropagation();
-                triggerFileInput();
-            });
-        }
-
-        if (uploadPhotoVideoModalButton) {
-            uploadPhotoVideoModalButton.addEventListener('click', function(e) {
-                e.stopPropagation();
-                triggerFileInput();
-            });
-        }
-
-        if (fileInput) {
-            fileInput.addEventListener('change', handleFileSelect);
-        }
-
-        // --- Post Button Logic ---
-        postTextArea.addEventListener('input', function() {
-            updatePostButtonState();
+            const mediaHtml = isVideo 
+                ? `<video class="w-full ${previewHeight} object-cover rounded-lg border border-white/20" controls><source src="${URL.createObjectURL(file)}" type="${file.type}"></video>`
+                : `<img src="${URL.createObjectURL(file)}" class="w-full ${previewHeight} object-cover rounded-lg border border-white/20">`;
+            
+            previewItem.innerHTML = `
+                ${mediaHtml}
+                <button class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-7 h-7 flex items-center justify-center shadow-lg z-10" onclick="this.parentElement.remove()">
+                    ×
+                </button>`;
+            mediaPreviewGrid.appendChild(previewItem);
         });
+    }
 
-        postButton.addEventListener('click', function() {
-            const postContent = postTextArea.value.trim();
-            const hasContent = postContent.length > 0 || selectedFiles.length > 0;
+    // --- 5. Event Listeners ---
+
+    // Logout Logic
+    if (logoutButton) {
+        logoutButton.addEventListener('click', () => {
+            logoutConfirmationModal.classList.remove('hidden');
+            setTimeout(() => {
+                logoutConfirmationModal.classList.add('opacity-100');
+                logoutModalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        });
+    }
+
+    if (confirmLogoutYes) confirmLogoutYes.addEventListener('click', () => window.location.href = '/');
+    if (confirmLogoutNo) {
+        confirmLogoutNo.addEventListener('click', () => {
+            logoutConfirmationModal.classList.add('hidden');
+        });
+    }
+
+    // Modal Triggers
+    if (openModalButton) openModalButton.addEventListener('click', openModal);
+    if (closeModalButton) closeModalButton.addEventListener('click', closeModal);
+
+    // Feeling/Activity Triggers
+    if (openFeelingActivityModalFromPostButton) {
+        openFeelingActivityModalFromPostButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openFeelingModal();
+        });
+    }
+
+    if (closeFeelingActivityModalButton) {
+        closeFeelingActivityModalButton.addEventListener('click', closeFeelingModal);
+    }
+
+    feelingOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            const type = this.getAttribute('data-type');
+            const text = this.getAttribute('data-text');
+            const emoji = this.getAttribute('data-emoji');
+            const prefix = (type === 'feeling') ? `— feeling ${text} ${emoji}` : `— is ${text.toLowerCase()} ${emoji}`;
             
-            if(hasContent) {
-                console.log("Post Submitted! Content: \n" + postContent);
-                console.log("Files attached: ", selectedFiles.length);
-                
-                // Here you would typically upload files to a server
-                // For now, we'll just log them
-                selectedFiles.forEach((file, index) => {
-                    console.log(`File ${index + 1}: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
-                });
-                
-                // Clear form
-                postTextArea.value = '';
-                clearMediaPreview();
-                updatePostButtonState();
-                closeModal();
-            }
-        })
+            postTextArea.value += ` ${prefix}`;
+            closeFeelingModal();
+            updatePostButtonState();
+            postTextArea.focus();
+        });
+    });
 
-        // --- Event Listeners ---\n
-        openModalButton.addEventListener('click', openModal);
-        closeModalButton.addEventListener('click', closeModal);
+    // Emoji Picker
+    if (emojiTrigger) {
+        emojiTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            emojiMenu.classList.toggle('hidden');
+        });
+    }
 
-        postModal.addEventListener('click', (e) => {
-            if(e.target === postModal) {
-                closeModal();
-            }
-        })
+    emojiItems.forEach(emoji => {
+        emoji.addEventListener('click', function() {
+            postTextArea.value += this.textContent;
+            emojiMenu.classList.add('hidden');
+            updatePostButtonState();
+            postTextArea.focus();
+        });
+    });
 
-        document.addEventListener('keydown', (e) => {
-            if(e.key === "Escape" && !postModal.classList.contains('hidden')) {
-                closeModal();
-            }
-        })
-    </script>
+    // File Uploads
+    if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            selectedFiles = [...selectedFiles, ...files];
+            updateMediaPreview();
+            updatePostButtonState();
+            if (postModal.classList.contains('hidden')) openModal();
+        });
+    }
+
+    if (uploadPhotoVideoButton) uploadPhotoVideoButton.addEventListener('click', () => fileInput.click());
+    if (uploadPhotoVideoModalButton) uploadPhotoVideoModalButton.addEventListener('click', () => fileInput.click());
+
+    // Post Text Input
+    if (postTextArea) {
+        postTextArea.addEventListener('input', updatePostButtonState);
+    }
+
+    // Global click to close menus
+    document.addEventListener('click', (e) => {
+        if (emojiMenu && !emojiMenu.contains(e.target) && e.target !== emojiTrigger) {
+            emojiMenu.classList.add('hidden');
+        }
+    });
+   </script>
 </body>
 </html>
