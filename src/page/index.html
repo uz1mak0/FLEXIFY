@@ -32,12 +32,25 @@
                 FLEXIFY
             </div>
 
-            <button
-                type="button"
-                id="logout-button"
-                class="frosted-glass px-4 py-2 text-sm font-bold text-white bg-red-600 rounded-full hover:bg-red-700 transition duration-200 shadow-lg z-40">
-                Logout
-            </button>
+            <div class="relative">
+                <button
+                    type="button"
+                    id="menu-toggle-button"
+                    class="p-2 text-white text-2xl hover:bg-white/10 rounded-full transition duration-200 z-40">
+                    ⋯
+                </button>
+
+                <div
+                    id="menu-panel"
+                    class="hidden absolute right-0 mt-2 w-48 bg-white/10 dark:bg-gray-900/40 frosted-glass border border-white/20 dark:border-gray-700/50 rounded-lg shadow-xl py-2 z-50">
+                    <button
+                        type="button"
+                        id="logout-button"
+                        class="w-full px-4 py-3 text-sm font-semibold text-white hover:bg-red-600/80 hover:bg-red-600 transition duration-200 text-left">
+                        Logout
+                    </button>
+                </div>
+            </div>
 
         </header>
 
@@ -297,6 +310,9 @@
     const mediaPreviewContainer = document.getElementById('media-preview-container');
     const mediaPreviewGrid = document.getElementById('media-preview-grid');
 
+    const menuToggleButton = document.getElementById('menu-toggle-button');
+    const menuPanel = document.getElementById('menu-panel');
+
     const feelingActivityModal = document.getElementById('feeling-activity-modal');
     const feelingActivityModalContent = document.getElementById('feeling-activity-modal-content');
     const closeFeelingActivityModalButton = document.getElementById('close-feeling-activity-modal');
@@ -394,6 +410,14 @@
 
     // --- 5. Event Listeners ---
 
+    // Menu Toggle
+    if (menuToggleButton) {
+        menuToggleButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menuPanel.classList.toggle('hidden');
+        });
+    }
+
     // Logout Logic
     if (logoutButton) {
         logoutButton.addEventListener('click', () => {
@@ -482,6 +506,9 @@
     document.addEventListener('click', (e) => {
         if (emojiMenu && !emojiMenu.contains(e.target) && e.target !== emojiTrigger) {
             emojiMenu.classList.add('hidden');
+        }
+        if (menuPanel && !menuPanel.contains(e.target) && e.target !== menuToggleButton) {
+            menuPanel.classList.add('hidden');
         }
     });
    </script>

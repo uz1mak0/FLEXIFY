@@ -48,11 +48,14 @@
                     placeholder="Email Address">
                 </div>
 
-                <div>
+                <div class="relative">
                     <label for="password" class="sr-only">password</label>
                     <input id="password" name="password" type="password" autocomplete="current-password" required
-                    class="login-input appearance-none relative block w-full px-4 py-3 border border-white/30 dark:border-gray-600 rounded-lg bg-black/30 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-200"
+                    class="login-input appearance-none relative block w-full px-4 py-3 pr-12 border border-white/30 dark:border-gray-600 rounded-lg bg-black/30 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-200"
                     placeholder="Password">
+                    <!-- <button type="button" id="toggle-password" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200 transition duration-150 focus:outline-none">
+                        👁️
+                    </button> -->
                 </div>
 
                 <div class="flex items-center justify-between">
@@ -93,6 +96,18 @@
     <script>
       const loginForm = document.querySelector('form');
       const loaderOverlay = document.getElementById('loader-overlay');
+      const togglePasswordButton = document.getElementById('toggle-password');
+      const passwordInput = document.getElementById('password');
+
+      // Password show/hide toggle
+      // if (togglePasswordButton && passwordInput) {
+      //   togglePasswordButton.addEventListener('click', (e) => {
+      //     e.preventDefault();
+      //     const isPassword = passwordInput.type === 'password';
+      //     passwordInput.type = isPassword ? 'text' : 'password';
+      //     togglePasswordButton.textContent = isPassword ? '👁️‍🗨️' : '👁️';
+      //   });
+      // }
 
       function showLoader() {
         loaderOverlay.classList.remove('hidden');
