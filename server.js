@@ -58,12 +58,48 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    if (req.method === 'POST' && pathname === '/reset-password') {
+
+        let body = '';
+
+        req.on('data', (chunk) => {
+            body += chunk.toString();
+        });
+
+        req.on('end', () => {
+
+            const parsedData = JSON.parse(body);
+            const email = parsedData.email;
+
+            console.log('Password Reset Request for:', email);
+
+            // TODO: Implement email sending functionality here
+            // You can use nodemailer or other email service
+            // Example: await sendPasswordResetEmail(email);
+
+            res.writeHead(200, {
+              'Content-Type': 'application/json'
+            });
+
+            res.end(JSON.stringify({ 
+                success: true, 
+                message: 'Password reset link has been sent to your email.' 
+            }));
+
+        });
+        return;
+    }
+
     if (pathname === '/') {
+        filePath = path.join(process.cwd(), 'src', 'page', 'login.html');
+    }else if(pathname === '/login'){
         filePath = path.join(process.cwd(), 'src', 'page', 'login.html');
     }else if(pathname === '/home'){
         filePath = path.join(process.cwd(), 'src', 'page', 'index.html');
     }else if(pathname === '/register'){
         filePath = path.join(process.cwd(), 'src', 'page', 'register.html');
+    }else if(pathname === '/forgetpassword'){
+        filePath = path.join(process.cwd(), 'src', 'page', 'forgetpassword.html');
     }else {
         filePath = path.join(STATIC_ROOT, req.url);
     }
