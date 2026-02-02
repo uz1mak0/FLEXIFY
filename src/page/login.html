@@ -22,6 +22,22 @@
         .login-input:focus {
             --tw-ring-color: #60a5fa;
         }
+
+        .shimmer {
+          background: linear-gradient(
+            90deg, 
+            rgba(255, 255, 255, 0) 0%, 
+            rgba(255, 255, 255, 0.1) 50%, 
+            rgba(255, 255, 255, 0) 100%
+          );
+          background-size: 200% 100%;
+          animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
     </style>
 </head>
 <body class="dark">
@@ -72,6 +88,19 @@
                         Sign In
                     </button>
                 </div>
+                <div class="mt-6">
+                  <div class="relative flex items-center justify-center mb-6">
+                  <div class="flex-grow border-t border-white/10"></div>
+                  <span class="flex-shrink mx-4 text-gray-400 text-xs uppercase tracking-widest">Or continue with</span>
+                  <div class="flex-grow border-t border-white/10"></div>
+                  </div>
+
+                    <a href="/auth/google" 
+                        class="w-full flex items-center justify-center gap-3 px-4 py-3 border border-white/20 rounded-lg bg-white/5 hover:bg-white/10 transition duration-200 text-white font-medium">
+                        <img src="https://www.svgrepo.com/show/355037/google.svg" class="w-5 h-5" alt="Google Logo">
+                        <span>Sign in with Google</span>
+                    </a>
+                </div> 
             </form>
 
             <div class="mt-6 text-center text-sm">
@@ -85,22 +114,12 @@
         </div>
     </section>
 
-    <div id="loader-overlay" class="fixed inset-0 z-50 bg-gray-900/90 hidden flex justify-center items-center backdrop-blur-sm transition-opacity duration-300 opacity-0">
-      <div class="loader-content flex flex-col items-center">
-        <div class="w-16 h-16 rounded-full bg-blue-500 animate-ping absolute"></div>
-        <div class="w-16 h-16 rounded-full bg-blue-600 opacity-75"></div>
-
-        <p class="mt-8 text-xl font-semibold text-white tracking-wider">FLEXIFY</p>
-      </div>
-    </div>
-
     <script>
       const loginForm = document.querySelector('form');
-      const loaderOverlay = document.getElementById('loader-overlay');
-      const togglePasswordButton = document.getElementById('toggle-password');
       const passwordInput = document.getElementById('password');
       const emailInput = document.getElementById('email');
       const emailError = document.getElementById('email-error');
+      const submitBtn = loginForm.querySelector('button[type="submit"]');
 
       // Email validation regex pattern
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -143,20 +162,28 @@
       // }
 
       function showLoader() {
-        loaderOverlay.classList.remove('hidden');
+        
+        const formContainer = document.querySelector('.frosted-glass');
+        formContainer.classList.add('shimmer');
+  
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `
+              <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span class="ml-2">Signing in...</span>`;
 
-        setTimeout(() => {
-          loaderOverlay.classList.add('opacity-100');
-        }, 10);
       }
 
       function hideLoader() {
 
-        loaderOverlay.classList.remove('opacity-100');
+        const formContainer = document.querySelector('.frost-glass');
+        formContainer.classList.remove('shimmer');
 
-        setTimeout(() => {
-          loaderOverlay.classList.add('hidden');
-        }, 300);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Sign In';
+
       }
 
       loginForm.addEventListener('submit', function(e) {
@@ -182,7 +209,7 @@
           if (data.success && data.redirect) {
             setTimeout(() => {
               window.location.href = data.redirect;
-            }, 1500);
+            }, 1000);
           }else {
             alert('Login failed. Please try again.');
             hideLoader();
@@ -190,7 +217,6 @@
         })
         .catch(error => {
           console.error('Network Error: ', error);
-          alert('An error occurred during login.');
           hideLoader();
         });
       });
