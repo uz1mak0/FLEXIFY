@@ -82,7 +82,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <section className="showcase relative min-h-screen flex justify-center items-start bg-gray-100 dark:bg-gray-900 pt-8 pb-8">
+    <section className="showcase relative min-h-screen flex justify-center items-center bg-gray-100 dark:bg-gray-900 py-8">
       <video
         src="/star.mp4"
         muted
@@ -91,18 +91,21 @@ export default function RegisterPage() {
         className="fixed top-0 left-0 w-full h-full object-cover"
       />
 
-      <div className="w-full max-w-md flex flex-col items-center justify-start relative z-10">
-        <div className="text-center mb-8">
-          <h1 className="text-5xl font-extrabold tracking-widest text-white mb-2" style={{ fontFamily: "'Bitcount Prop Single Ink', sans-serif" }}>
-            FLEXIFY
-          </h1>
-          <h2 className="text-2xl font-semibold text-gray-300">Create your Account</h2>
-        </div>
-
+      <div className="w-full max-w-md flex flex-col items-center justify-center relative z-10">
         <div className="w-full bg-white/10 dark:bg-gray-900/40 frosted-glass border border-white/20 dark:border-gray-700/50 rounded-lg shadow-2xl p-6">
-          <h3 className="text-4xl font-extrabold tracking-wider text-white mb-6 text-center" style={{ fontFamily: "'Bitcount Prop Single Ink', sans-serif" }}>
-            FLEXIFY
-          </h3>
+          {/* Logo Section */}
+          <div className="text-center mb-8">
+            <h1
+              className="text-5xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 drop-shadow-lg"
+              style={{
+                fontFamily: "'Orbitron', 'Exo 2', 'Rajdhani', sans-serif",
+                textShadow: '0 0 30px rgba(147, 51, 234, 0.5), 0 0 60px rgba(59, 130, 246, 0.3)'
+              }}
+            >
+              FLEXIFY
+            </h1>
+            <div className="mt-2 h-0.5 w-32 mx-auto bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 opacity-60"></div>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>

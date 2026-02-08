@@ -81,8 +81,14 @@ export default function LoginPage() {
 
       <div className="w-full max-w-sm bg-white/10 dark:bg-gray-900/40 frosted-glass border border-white/20 dark:border-gray-700/50 rounded-xl shadow-2xl p-6 md:p-8 text-white relative z-10">
         <div className="text-center mb-8">
-          <h1 className="text-5xl font-extrabold tracking-widest text-white mb-2" style={{ fontFamily: "'Bitcount Prop Single Ink', sans-serif" }}>
-            FLEXIFY
+          <h1 
+                className="text-4xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 drop-shadow-lg"
+                style={{ 
+                  fontFamily: "'Orbitron', 'Exo 2', 'Rajdhani', sans-serif",
+                  textShadow: '0 0 30px rgba(147, 51, 234, 0.5), 0 0 60px rgba(59, 130, 246, 0.3)'
+                }}
+              >
+                FLEXIFY
           </h1>
         </div>
 
@@ -169,7 +175,7 @@ export default function LoginPage() {
             </button>
           </div>
 
-          <div className="mt-6">
+          {/* <div className="mt-6">
             <div className="relative flex items-center justify-center mb-6">
               <div className="flex-grow border-t border-white/10" />
               <span className="flex-shrink mx-4 text-gray-400 text-xs uppercase tracking-widest">
@@ -179,7 +185,7 @@ export default function LoginPage() {
             </div>
 
             <a
-              href="/auth/google"
+              href="/api/auth/google"
               className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-white/30 rounded-lg bg-white/5 hover:bg-white/10 transition duration-200 text-white font-medium"
             >
               <img
@@ -189,7 +195,7 @@ export default function LoginPage() {
               />
               <span>Sign in with Google</span>
             </a>
-          </div>
+          </div> */}
         </form>
 
         <div className="mt-6 text-center text-sm">
