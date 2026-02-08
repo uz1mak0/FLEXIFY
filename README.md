@@ -1,6 +1,6 @@
 # FLEXIFY - Next.js Project
 
-A modern social fitness application built with Next.js, TypeScript, Tailwind CSS, and Node.js.
+A modern social media platform that everyone can share their experiences in lif with secured identity, built with Next.js, TypeScript, Tailwind CSS, and Node.js.
 
 ## Project Structure
 
