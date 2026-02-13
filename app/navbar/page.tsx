@@ -9,6 +9,68 @@ interface NavbarProps {
   showMenu?: boolean;
 }
 
+// Animated F Logo Component with RGB hover effect
+function AnimatedFLogo() {
+  return (
+    <svg
+      width="60"
+      height="60"
+      viewBox="0 0 100 100"
+      className="transition-all duration-300 hover:scale-110"
+      style={{
+        filter: 'drop-shadow(0 0 5px rgba(147, 51, 234, 0.5))'
+      }}
+    >
+      <defs>
+        <linearGradient id="fGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#3b82f6" />
+          <stop offset="50%" stopColor="#8b5cf6" />
+          <stop offset="100%" stopColor="#ec4899" />
+        </linearGradient>
+        {/* RGB Rainbow Gradient for hover effect */}
+        <linearGradient id="rgbHoverGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#ff0000">
+            <animate attributeName="stop-color" values="#ff0000;#00ff00;#0000ff;#ff0000" dur="1.5s" repeatCount="indefinite" />
+          </stop>
+          <stop offset="33%" stopColor="#00ff00">
+            <animate attributeName="stop-color" values="#00ff00;#0000ff;#ff0000;#00ff00" dur="1.5s" repeatCount="indefinite" />
+          </stop>
+          <stop offset="66%" stopColor="#0000ff">
+            <animate attributeName="stop-color" values="#0000ff;#ff0000;#00ff00;#0000ff" dur="1.5s" repeatCount="indefinite" />
+          </stop>
+          <stop offset="100%" stopColor="#ff0000">
+            <animate attributeName="stop-color" values="#ff0000;#00ff00;#0000ff;#ff0000" dur="1.5s" repeatCount="indefinite" />
+          </stop>
+        </linearGradient>
+      </defs>
+      
+      {/* F Shape - uses rgbHoverGradient on hover */}
+      <text
+        x="50" y="75"
+        fontFamily="'Orbitron', sans-serif"
+        fontSize="75"
+        fontWeight="bold"
+        textAnchor="middle"
+        fill="url(#fGradient)"
+        className="transition-all duration-300"
+        style={{
+          transition: 'fill 0.3s ease'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.fill = 'url(#rgbHoverGradient)';
+          e.currentTarget.style.filter = 'drop-shadow(0 0 10px rgba(255, 0, 0, 0.8))';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.fill = 'url(#fGradient)';
+          e.currentTarget.style.filter = 'drop-shadow(0 0 5px rgba(147, 51, 234, 0.5))';
+        }}
+      >
+        F
+      </text>
+    </svg>
+  );
+}
+
 export default function Navbar({ onProfileClick, onLogout, showMenu = true }: NavbarProps) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -28,35 +90,33 @@ export default function Navbar({ onProfileClick, onLogout, showMenu = true }: Na
     }
   };
 
+  const handleLogoClick = () => {
+    router.push('/home');
+  };
+
   return (
     <nav className="fixed top-0 left-0 w-full z-30 backdrop-blur-md bg-white/10 dark:bg-black/10 border-b border-white/20 dark:border-gray-700/30">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <div className="relative">
-              <h1 
-                className="text-4xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 drop-shadow-lg"
-                style={{ 
-                  fontFamily: "'Orbitron', 'Exo 2', 'Rajdhani', sans-serif",
-                  textShadow: '0 0 30px rgba(147, 51, 234, 0.5), 0 0 60px rgba(59, 130, 246, 0.3)'
-                }}
-              >
-                FLEXIFY
-              </h1>
-              <div className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 opacity-60"></div>
-            </div>
+            <button
+              onClick={handleLogoClick}
+              className="relative cursor-pointer transition-transform duration-200 hover:scale-105"
+            >
+              <AnimatedFLogo />
+            </button>
           </div>
 
           {/* Navigation Items */}
           <div className="flex items-center space-x-6">
-            {/* Home Link */}
+            {/* Home Link
             <button
               onClick={() => router.push('/home')}
               className="text-white/90 hover:text-white font-semibold transition-all duration-200 hover:scale-105"
             >
               Home
-            </button>
+            </button> */}
 
             {/* Notifications Icon */}
             <button
