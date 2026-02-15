@@ -13,9 +13,7 @@ export default function ForgetPasswordPage() {
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const validateEmail = (email: string) => {
-    return emailRegex.test(email);
-  };
+  const validateEmail = (email: string) => emailRegex.test(email);
 
   const handleEmailBlur = () => {
     if (email && !validateEmail(email)) {
@@ -35,32 +33,24 @@ export default function ForgetPasswordPage() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (!validateEmail(email)) {
       setEmailError('Please enter a valid email address');
       return;
     }
 
     setIsLoading(true);
-
     try {
       const response = await fetch('/api/reset-password', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
       });
 
       const data = await response.json();
-
       if (data.success) {
         sessionStorage.setItem('resetEmail', email);
         setShowSuccess(true);
-
-        setTimeout(() => {
-          router.push('/verify-otp');
-        }, 3000);
+        setTimeout(() => router.push('/verify-otp'), 3000);
       } else {
         alert(data.message || 'Failed to send OTP. Please try again.');
         setIsLoading(false);
@@ -73,91 +63,112 @@ export default function ForgetPasswordPage() {
   };
 
   return (
-    <section className="showcase relative min-h-screen flex justify-center items-center bg-gray-100 dark:bg-gray-900">
+    <div className="flex flex-col h-screen overflow-hidden">
+      {/* Background Video */}
       <video
         src="/star.mp4"
         muted
         loop
         autoPlay
-        className="fixed top-0 left-0 w-full h-full object-cover"
+        className="fixed top-0 left-0 w-full h-full object-cover -z-10"
       />
 
-      <div className="w-full max-w-sm bg-white/10 dark:bg-gray-900/40 frosted-glass border border-white/20 dark:border-gray-700/50 rounded-xl shadow-2xl p-6 md:p-8 text-white relative z-10">
-        <div className="text-center mb-8">
-          <h1 
-                className="text-4xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 drop-shadow-lg"
-                style={{ 
-                  fontFamily: "'Orbitron', 'Exo 2', 'Rajdhani', sans-serif",
-                  textShadow: '0 0 30px rgba(147, 51, 234, 0.5), 0 0 60px rgba(59, 130, 246, 0.3)'
-                }}
-              >
-                FLEXIFY
-          </h1>
-          <p className="text-gray-300 text-sm">Reset Your Password</p>
-        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="mb-6">
-            <p className="text-gray-300 text-sm">
-              Enter your email address and we'll send you an OTP to reset your password.
-            </p>
+      <section className="relative flex-grow flex justify-center items-center p-4">
+        <div className="w-full max-w-sm bg-white/10 dark:bg-gray-900/40 frosted-glass border border-white/20 dark:border-gray-700/50 rounded-xl shadow-2xl p-6 md:p-8 text-white relative z-10">
+          <div className="text-center mb-8">
+            <h1 
+              className="text-4xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 drop-shadow-lg"
+              style={{ 
+                fontFamily: "'Orbitron', 'Exo 2', 'Rajdhani', sans-serif",
+                textShadow: '0 0 30px rgba(147, 51, 234, 0.5), 0 0 60px rgba(59, 130, 246, 0.3)'
+              }}
+            >
+              FLEXIFY
+            </h1>
+            <p className="text-gray-300 text-sm">Reset Your Password</p>
           </div>
 
-          <div>
-            <label htmlFor="email" className="sr-only">
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={handleEmailChange}
-              onBlur={handleEmailBlur}
-              className="login-input appearance-none relative block w-full px-4 py-3 border border-white/30 dark:border-gray-600 rounded-lg bg-black/30 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-200"
-              placeholder="Email Address"
-            />
-            {emailError && <p className="text-red-400 text-sm mt-1">{emailError}</p>}
-          </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="mb-6">
+              <p className="text-gray-300 text-sm">
+                Enter your email address and we'll send you an OTP to reset your password.
+              </p>
+            </div>
 
-          <div>
+            <div>
+              <label htmlFor="email" className="sr-only">Email Address</label>
+              <input
+                type="email"
+                id="email"
+                required
+                value={email}
+                onChange={handleEmailChange}
+                onBlur={handleEmailBlur}
+                className="login-input appearance-none relative block w-full px-4 py-3 border border-white/30 dark:border-gray-600 rounded-lg bg-black/30 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200"
+                placeholder="Email Address"
+              />
+              {emailError && <p className="text-red-400 text-sm mt-1">{emailError}</p>}
+            </div>
+
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center p-3 px-4 border border-transparent text-lg font-bold rounded-lg text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center p-3 px-4 border border-transparent text-lg font-bold rounded-lg text-white bg-blue-500 hover:bg-blue-600 transition duration-200 disabled:opacity-50"
             >
               {isLoading ? 'Sending...' : 'Send OTP'}
             </button>
+          </form>
+
+          <div className="mt-6 text-center text-sm">
+            <p className="text-gray-300">
+              Remember your password?
+              <Link href="/" className="font-medium text-blue-400 hover:text-blue-300 ml-1">
+                Back to Login
+              </Link>
+            </p>
           </div>
-        </form>
-
-        <div className="mt-6 text-center text-sm">
-          <p className="text-gray-300">
-            Remember your password?
-            <Link
-              href="/"
-              className="font-medium text-blue-400 hover:text-blue-300 transition duration-150 ml-1"
-            >
-              Back to Login
-            </Link>
-          </p>
         </div>
-      </div>
 
-      {showSuccess && (
-        <div className="fixed inset-0 z-50 bg-gray-900/90 flex justify-center items-center backdrop-blur-sm transition-opacity duration-300">
-          <div className="success-content flex flex-col items-center text-center">
-            <div className="w-20 h-20 rounded-full bg-green-500 flex items-center justify-center mb-4">
-              <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
+        {showSuccess && (
+          <div className="fixed inset-0 z-50 bg-gray-900/90 flex justify-center items-center backdrop-blur-sm">
+            <div className="success-content flex flex-col items-center text-center">
+              <div className="w-20 h-20 rounded-full bg-green-500 flex items-center justify-center mb-4">
+                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <p className="text-xl font-semibold text-white mb-2">Success!</p>
+              <p className="text-gray-300 text-sm">Check your email for the OTP.</p>
             </div>
-            <p className="text-xl font-semibold text-white tracking-wider mb-2">Success!</p>
-            <p className="text-gray-300 text-sm">Check your email for the OTP.</p>
+          </div>
+        )}
+      </section>
+      <footer className="relative z-10 bg-black/40 backdrop-blur-md border-t border-white/10 text-gray-300 py-4">
+        <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <div className="text-center md:text-left">
+            <h2 className="text-lg font-bold text-white tracking-tight">
+              <span className="text-blue-400">FLEXIFY</span>
+            </h2>
+            <p className="text-[10px] text-gray-400 leading-tight">
+              Next-gen Social Media platform.
+            </p>
+          </div>
+
+          <div className="flex justify-center gap-6 text-xs font-medium">
+            <Link href="/features" className="hover:text-blue-400 transition">Features</Link>
+            <Link href="/privacy" className="hover:text-blue-400 transition">Privacy</Link>
+          </div>
+
+          <div className="flex flex-col md:items-end items-center gap-1 text-[10px]">
+            <div className="flex items-center gap-2">
+              <span className="text-blue-400">📧</span>
+              <span>support@flexify.io</span>
+            </div>
+            <p className="text-gray-500">© {new Date().getFullYear()} Flexify Labs</p>
           </div>
         </div>
-      )}
-    </section>
+      </footer>
+    </div>
   );
 }

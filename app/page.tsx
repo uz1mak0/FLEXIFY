@@ -70,146 +70,112 @@ export default function LoginPage() {
   };
 
   return (
-    <section className="showcase relative min-h-screen flex justify-center items-center bg-gray-100 dark:bg-gray-900">
+  <>
+    <div className="h-screen flex flex-col overflow-hidden">
       <video
         src="/star.mp4"
         muted
         loop
         autoPlay
-        className="fixed top-0 left-0 w-full h-full object-cover"
+        className="fixed top-0 left-0 w-full h-full object-cover -z-10"
       />
-
-      <div className="w-full max-w-sm bg-white/10 dark:bg-gray-900/40 frosted-glass border border-white/20 dark:border-gray-700/50 rounded-xl shadow-2xl p-6 md:p-8 text-white relative z-10">
-        <div className="text-center mb-8">
-          <h1 
-                className="text-4xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 drop-shadow-lg"
-                style={{ 
-                  fontFamily: "'Orbitron', 'Exo 2', 'Rajdhani', sans-serif",
-                  textShadow: '0 0 30px rgba(147, 51, 234, 0.5), 0 0 60px rgba(59, 130, 246, 0.3)'
-                }}
-              >
-                FLEXIFY
-          </h1>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="sr-only">
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={handleEmailChange}
-              onBlur={handleEmailBlur}
-              className="login-input appearance-none relative block w-full px-4 py-3 border-2 border-white/40 dark:border-gray-500 rounded-lg bg-black/30 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition duration-200"
-              placeholder="Email Address"
-            />
-            {emailError && <p className="text-red-400 text-sm mt-1">{emailError}</p>}
+      
+      <section className="flex-grow flex justify-center items-center relative z-10 px-4">
+        <div className="w-full max-w-sm bg-white/10 dark:bg-gray-900/40 frosted-glass border border-white/20 dark:border-gray-700/50 rounded-xl shadow-2xl p-6 md:p-8 text-white">
+          <div className="text-center mb-6">
+            <h1 
+              className="text-4xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 drop-shadow-lg"
+              style={{ 
+                fontFamily: "'Orbitron', 'Exo 2', 'Rajdhani', sans-serif",
+                textShadow: '0 0 30px rgba(147, 51, 234, 0.5), 0 0 60px rgba(59, 130, 246, 0.3)'
+              }}
+            >
+              FLEXIFY
+            </h1>
           </div>
 
-          <div className="relative">
-            <label htmlFor="password" className="sr-only">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="login-input appearance-none relative block w-full px-4 py-3 pr-12 border-2 border-white/40 dark:border-gray-500 rounded-lg bg-black/30 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition duration-200"
-              placeholder="Password"
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="email" className="sr-only">Email Address</label>
+              <input
+                type="email"
+                id="email"
+                required
+                value={email}
+                onChange={handleEmailChange}
+                onBlur={handleEmailBlur}
+                className="login-input appearance-none relative block w-full px-4 py-3 border-2 border-white/40 dark:border-gray-500 rounded-lg bg-black/30 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition duration-200"
+                placeholder="Email Address"
+              />
+              {emailError && <p className="text-red-400 text-xs mt-1">{emailError}</p>}
+            </div>
 
-          <div className="flex items-center justify-between">
-            <div className="text-sm">
-              <Link
-                href="/forgetpassword"
-                className="font-medium text-blue-400 hover:text-blue-300 transition duration-150"
-              >
+            <div className="relative">
+              <label htmlFor="password" className="sr-only">Password</label>
+              <input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="login-input appearance-none relative block w-full px-4 py-3 border-2 border-white/40 dark:border-gray-500 rounded-lg bg-black/30 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition duration-200"
+                placeholder="Password"
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <Link href="/forgetpassword" size-sm className="text-xs font-medium text-blue-400 hover:text-blue-300">
                 Forgot your password?
               </Link>
             </div>
-          </div>
 
-          <div>
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center p-3 px-4 border border-transparent text-lg font-bold rounded-lg text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center p-3 border border-transparent text-md font-bold rounded-lg text-white bg-blue-500 hover:bg-blue-600 transition duration-200 disabled:opacity-50"
             >
-              {isLoading ? (
-                <>
-                  <svg
-                    className="animate-spin h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-                  </svg>
-                  <span className="ml-2">Signing in...</span>
-                </>
-              ) : (
-                'Sign In'
-              )}
+              {isLoading ? 'Signing in...' : 'Sign In'}
             </button>
+          </form>
+
+          <div className="mt-4 text-center text-xs">
+            <p className="text-gray-300">
+              Don't have an account?
+              <Link href="/register" className="font-medium text-blue-400 hover:text-blue-300 ml-1">
+                Sign up here!
+              </Link>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <footer className="relative z-10 bg-black/40 backdrop-blur-md border-t border-white/10 text-gray-300 py-6">
+        <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+          
+          <div className="text-center md:text-left">
+            <h2 className="text-lg font-bold text-white tracking-tight">
+              <span className="text-blue-400">FLEXIFY</span>
+            </h2>
+            <p className="text-xs text-gray-400 leading-tight mt-1">
+              Next-gen Social Media platform for sharing experiences in life.
+            </p>
           </div>
 
-          {/* <div className="mt-6">
-            <div className="relative flex items-center justify-center mb-6">
-              <div className="flex-grow border-t border-white/10" />
-              <span className="flex-shrink mx-4 text-gray-400 text-xs uppercase tracking-widest">
-                Or continue with
-              </span>
-              <div className="flex-grow border-t border-white/10" />
+          <div className="flex justify-center gap-6 text-xs font-medium">
+            <Link href="/features" className="hover:text-blue-400 transition">Features</Link>
+            <Link href="/privacy" className="hover:text-blue-400 transition">Privacy</Link>
+          </div>
+
+          <div className="flex flex-col md:items-end items-center gap-1 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="text-blue-400">📧</span>
+              <span>support@flexify.io</span>
             </div>
-
-            <a
-              href="/api/auth/google"
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-white/30 rounded-lg bg-white/5 hover:bg-white/10 transition duration-200 text-white font-medium"
-            >
-              <img
-                src="https://www.svgrepo.com/show/355037/google.svg"
-                className="w-5 h-5"
-                alt="Google Logo"
-              />
-              <span>Sign in with Google</span>
-            </a>
-          </div> */}
-        </form>
-
-        <div className="mt-6 text-center text-sm">
-          <p className="text-gray-300">
-            Don't have an account?
-            <Link
-              href="/register"
-              className="font-medium text-blue-400 hover:text-blue-300 transition duration-150 ml-1"
-            >
-              Sign up here!
-            </Link>
-          </p>
+            <p className="text-gray-500 text-[10px]">© {new Date().getFullYear()} Flexify Labs</p>
+          </div>
         </div>
-      </div>
-    </section>
+      </footer>
+    </div>
+  </>
   );
 }

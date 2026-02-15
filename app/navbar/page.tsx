@@ -203,7 +203,7 @@ export default function Navbar({ onProfileClick, onLogout, showMenu = true }: Na
                         <span>Profile</span>
                       </button>
                       
-                      <button
+                     {/* <button
                         onClick={() => {
                           setMenuOpen(false);
                           // Settings functionality
@@ -231,7 +231,7 @@ export default function Navbar({ onProfileClick, onLogout, showMenu = true }: Na
                           />
                         </svg>
                         <span>Settings</span>
-                      </button>
+                      </button>*/}
 
                       <div className="my-1 border-t border-white/10"></div>
 
