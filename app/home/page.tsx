@@ -4,7 +4,6 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Post } from '@/lib';
 import Navbar from '@/app/navbar/page';
-import Link from 'next/link';
 import UserProfile from '@/app/userProfile/page';
 
 export default function HomePage() {
@@ -13,56 +12,116 @@ export default function HomePage() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  
+  // --- Post Creation States ---
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newContent, setNewContent] = useState('');
-  const [showPhotoModal, setShowPhotoModal] = useState(false);
-  const [showFeelingModal, setShowFeelingModal] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [selectedFeeling, setSelectedFeeling] = useState<string | null>(null);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false); // Controls post modal emoji picker
   const [showProfileModal, setShowProfileModal] = useState(false);
-  const [ showChat, setShowChat ] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const toggleChat = () => {
-    setShowChat((prev) => !prev);
-  };
+  // --- Chat Specific States ---
+  const [showChat, setShowChat] = useState(false);
+  const [activeChatUser, setActiveChatUser] = useState<string | null>(null);
+  const [chatInput, setChatInput] = useState('');
+  const [chatMessages, setChatMessages] = useState<{sender: string, text: string, type: 'text' | 'media', file?: string}[]>([
+    { sender: 'System', text: 'Welcome to Flexify chat!', type: 'text' }
+  ]);
+  const [showChatEmoji, setShowChatEmoji] = useState(false);
+  const chatFileInputRef = useRef<HTMLInputElement>(null);
+
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   const emojis = ['😀', '😂', '😍', '😢', '😎', '🎉', '👍', '♥️', '🔥', '✨', '😡', '😱', '🤔', '😴', '🙏', '💪', '🎊', '💯'];
 
-  const feelings = [
-    '😊 Happy', '😢 Sad', '😠 Angry', '😴 Tired', '😍 Loved',
-    '🤔 Thoughtful', '😎 Cool', '🤗 Grateful', '😱 Shocked', '😌 Peaceful'
-  ];
+  // --- Post Logic ---
+  const handleCreatePost = () => {
+    if (!newContent.trim() && uploadedFiles.length === 0) return;
 
-  const activities = [
-    '🏃 Working out', '🍕 Eating', '🎮 Gaming', '🏠 At home',
-    '🚗 Traveling', '📚 Reading', '🎬 Watching', '🎵 Listening to music', '☕ Drinking coffee', '🛌 Sleeping'
-  ];
+    const newPost: Post = {
+      id: Date.now(),
+      author: "You",
+      time: "Just now", 
+      content: newContent,
+      likes: 0,
+      weight: 1.0,
+    };
 
-  const loadFeed = useCallback(async (pageNum: number) => {
-    if (loading || !hasMore) return;
+   
+    setPosts((prev) => [newPost, ...prev]);
+    
+    // Clear state
+    setNewContent('');
+    setUploadedFiles([]);
+    setShowCreateModal(false);
+    setShowEmojiPicker(false);
+  };
 
-    setLoading(true);
-    try {
-      const response = await fetch(`/api/feed?page=${pageNum}`);
-      const newPosts: Post[] = await response.json();
-
-      if (newPosts.length === 0) {
-        setHasMore(false);
-      } else {
-        setPosts((prev) => [...prev, ...newPosts]);
-      }
-    } catch (err) {
-      console.error('Feed error:', err);
-    } finally {
-      setLoading(false);
+  const handlePostFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setUploadedFiles(Array.from(e.target.files));
+      setShowCreateModal(true); 
     }
+  };
+
+  // --- Chat Logic ---
+  const handleSelectConversation = (userName: string) => {
+    setActiveChatUser(userName);
+    setShowChat(true);
+    if (!chatMessages.some(m => m.sender === userName)) {
+      setChatMessages(prev => [...prev, { sender: userName, text: `Hey! Let's chat.`, type: 'text' }]);
+    }
+  };
+
+  const sendChatMessage = () => {
+    if (!chatInput.trim()) return;
+    setChatMessages(prev => [...prev, { sender: 'You', text: chatInput, type: 'text' }]);
+    setChatInput('');
+    setShowChatEmoji(false);
+  };
+
+  const handleChatFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setChatMessages(prev => [...prev, { 
+          sender: 'You', 
+          text: `Sent an attachment: ${file.name}`, 
+          type: 'media', 
+          file: event.target?.result as string 
+        }]);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // --- Feed Logic ---
+  const loadFeed = useCallback(async (pageNum: number) => {
+      if (loading || !hasMore) return;
+      setLoading(true);
+
+      try {
+        const response = await fetch(`/api/feed?page=${pageNum}`);
+        const data = await response.json();
+
+        
+        if (!data || data.length === 0) {
+          setHasMore(false); 
+        } else {
+          setPosts((prev) => [...prev, ...data]);
+        }
+      } catch(err) {
+        console.error('Feed Error:', err);
+        setHasMore(false);
+      } finally {
+        setLoading(false);
+      }
   }, [loading, hasMore]);
 
-  // Intersection Observer for infinite scroll
   useEffect(() => {
+    const currentSentinel = sentinelRef.current;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !loading) {
@@ -72,32 +131,18 @@ export default function HomePage() {
       },
       { threshold: 0.1 }
     );
-
-    if (sentinelRef.current) {
-      observer.observe(sentinelRef.current);
-    }
-
-    return () => observer.disconnect();
+    if (currentSentinel) observer.observe(currentSentinel);
+    return () => {
+      if (currentSentinel) observer.unobserve(currentSentinel);
+    };
   }, [page, loading, hasMore, loadFeed]);
 
-  // Initial load
-  useEffect(() => {
-    loadFeed(1);
-  }, []);
-
-  const handleLogout = () => {
-    router.push('/');
-  };
+  useEffect(() => { loadFeed(1); }, []);
 
   const renderPost = (post: Post) => (
-    <div
-      key={`${post.id}-${post.author}`}
-      className="bg-white/10 frosted-glass border border-white/20 rounded-xl p-4 text-white transition-all hover:bg-white/15"
-    >
+    <div key={`${post.id}-${post.author}`} className="bg-white/10 frosted-glass border border-white/20 rounded-xl p-4 text-white transition-all hover:bg-white/15">
       <div className="flex items-center space-x-3 mb-4">
-        <div className="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center font-bold">
-          {post.author[0]}
-        </div>
+        <div className="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center font-bold">{post.author[0]}</div>
         <div>
           <p className="font-bold">{post.author}</p>
           <p className="text-xs text-gray-400">{post.time}</p>
@@ -113,371 +158,178 @@ export default function HomePage() {
 
   return (
     <>
-        <section className="showcase relative min-h-screen flex justify-center items-start bg-gray-100 dark:bg-gray-900">
-          <video
-            src="/star.mp4"
-            muted
-            loop
-            autoPlay
-            className="fixed top-0 left-0 w-full h-full object-cover"
-          />
+      <section className="showcase relative min-h-screen flex justify-center items-start bg-gray-100 dark:bg-gray-900">
+        <video src="/star.mp4" muted loop autoPlay className="fixed top-0 left-0 w-full h-full object-cover" />
 
-          {/* Navbar */}
-          <Navbar
-            onProfileClick={() => setShowProfileModal(true)}
-            onLogout={handleLogout}
-            onChatClick={toggleChat}
-          />
+        <Navbar
+          onProfileClick={() => setShowProfileModal(true)}
+          onLogout={() => router.push('/')}
+          onSelectConversation={handleSelectConversation} 
+        />
 
-          {/* Profile Modal */}
-          <UserProfile
-            isOpen={showProfileModal}
-            onClose={() => setShowProfileModal(false)}
-          />
+        <UserProfile isOpen={showProfileModal} onClose={() => setShowProfileModal(false)} />
 
-          {/* Main Content */}
-          <div className="main-content relative z-10 w-full flex flex-col items-center pt-32 p-4 space-y-6">
-            {/* Create Post Widget */}
-            <div className="w-full max-w-xl bg-white/10 dark:bg-gray-900/40 frosted-glass border border-white/20 dark:border-gray-700/50 rounded-lg shadow-xl p-4">
-              <div className="flex items-center space-x-3 mb-3 border-b border-white/10 dark:border-gray-600/50 pb-3">
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => setShowCreateModal(true)}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setShowCreateModal(true); }}
-                  className="flex-1 bg-white/5 dark:bg-black/20 p-2 rounded-full text-white dark:text-gray-300 hover:bg-white/10 dark:hover:bg-black/30 transition duration-150 cursor-pointer"
-                >
-                  Share your thoughts?
-                </div>
-              </div>
-
-              {showCreateModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
-                  <div
-                    className="absolute inset-0 bg-black/60"
-                    onClick={() => setShowCreateModal(false)}
-                  />
-
-                  <div className="relative w-full max-w-xl bg-white/95 dark:bg-gray-900/95 frosted-glass border border-white/20 rounded-lg p-6 z-60">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Create Post</h3>
-                    <textarea
-                      value={newContent}
-                      onChange={(e) => setNewContent(e.target.value)}
-                      className="w-full min-h-[120px] p-3 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                      placeholder="What's on your mind?"
-                    />
-
-                    {showEmojiPicker && (
-                      <div className="mt-3 p-3 bg-white/10 dark:bg-black/20 rounded-md border border-white/20">
-                        <div className="grid grid-cols-9 gap-2">
-                          {emojis.map((emoji) => (
-                            <button
-                              key={emoji}
-                              onClick={() => {
-                                setNewContent((prev) => prev + emoji);
-                              }}
-                              className="text-xl hover:scale-125 transition duration-150 cursor-pointer"
-                            >
-                              {emoji}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="mt-4 flex items-center justify-between">
-                      <button
-                        type="button"
-                        onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                        className="text-xl hover:scale-110 transition duration-150 cursor-pointer"
-                        title="Add emoji"
-                      >
-                        😊
-                      </button>
-
-                      <div className="flex space-x-2">
-                        <button
-                          type="button"
-                          onClick={() => { setShowCreateModal(false); setNewContent(''); setShowEmojiPicker(false); }}
-                          className="px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (!newContent.trim()) return;
-                            const newPost: Post = {
-                              id: Date.now(),
-                              author: 'You',
-                              time: 'Just now',
-                              content: newContent.trim(),
-                              likes: 0,
-                              weight: 0
-                            };
-                            setPosts((prev) => [newPost, ...prev]);
-                            setNewContent('');
-                            setShowCreateModal(false);
-                            setShowEmojiPicker(false);
-                          }}
-                          className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-500"
-                        >
-                          Post
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div className="flex justify-around text-sm font-semibold text-white dark:text-gray-300">
-                <button
-                  onClick={() => setShowPhotoModal(true)}
-                  className="flex items-center space-x-1 hover:text-green-400 transition"
-                >
-                  <span>🖼️</span>
-                  <span>Photo/Video</span>
-                </button>
+        <div className="main-content relative z-10 w-full flex flex-col items-center pt-32 p-4 space-y-6">
+          {/* Create Post Widget */}
+          <div className="w-full max-w-xl bg-white/10 dark:bg-gray-900/40 frosted-glass border border-white/20 rounded-lg p-4">
+            <div className="flex items-center space-x-3 mb-3 border-b border-white/10 pb-3">
+              <div
+                role="button"
+                onClick={() => setShowCreateModal(true)}
+                className="flex-1 bg-white/5 p-2 rounded-full text-white hover:bg-white/10 transition cursor-pointer"
+              >
+                Share your thoughts?
               </div>
             </div>
-
-            {/* Photo/Video Upload Modal */}
-            {showPhotoModal && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center">
-                <div
-                  className="absolute inset-0 bg-black/60"
-                  onClick={() => { setShowPhotoModal(false); setUploadedFiles([]); }}
-                />
-
-                <div className="relative w-full max-w-xl bg-white/95 dark:bg-gray-900/95 frosted-glass border border-white/20 rounded-lg p-6 z-60">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Add Photos or Videos</h3>
-
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    multiple
-                    accept="image/*,video/*"
-                    onChange={(e) => {
-                      if (e.target.files) {
-                        setUploadedFiles(Array.from(e.target.files));
-                      }
-                    }}
-                    className="hidden"
-                  />
-
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-full py-8 border-2 border-dashed border-blue-400 rounded-lg text-white hover:bg-white/5 transition flex flex-col items-center justify-center"
-                  >
-                    <span className="text-3xl mb-2">📁</span>
-                    Click to upload or drag files here
-                  </button>
-
-                  {uploadedFiles.length > 0 && (
-                    <div className="mt-4">
-                      <p className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                        Selected: {uploadedFiles.length} file(s)
-                      </p>
-                      <div className="max-h-40 overflow-y-auto space-y-2">
-                        {uploadedFiles.map((file, idx) => (
-                          <div
-                            key={idx}
-                            className="flex items-center justify-between bg-white/10 dark:bg-black/20 p-2 rounded text-sm text-gray-900 dark:text-white"
-                          >
-                            <span>{file.name}</span>
-                            <button
-                              onClick={() =>
-                                setUploadedFiles(uploadedFiles.filter((_, i) => i !== idx))
-                              }
-                              className="text-red-500 hover:text-red-400 transition"
-                            >
-                              ✕
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="mt-6 flex justify-end space-x-2">
-                    <button
-                      type="button"
-                      onClick={() => { setShowPhotoModal(false); setUploadedFiles([]); }}
-                      className="px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (uploadedFiles.length === 0) return;
-                        const fileNames = uploadedFiles.map(f => f.name).join(', ');
-                        const newPost: Post = {
-                          id: Date.now(),
-                          author: 'You',
-                          time: 'Just now',
-                          content: `📸 Shared ${uploadedFiles.length} file(s): ${fileNames}`,
-                          likes: 0,
-                          weight: 0
-                        };
-                        setPosts((prev) => [newPost, ...prev]);
-                        setUploadedFiles([]);
-                        setShowPhotoModal(false);
-                      }}
-                      className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-500"
-                    >
-                      Share
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Feeling/Activity Modal */}
-            {showFeelingModal && (
-              <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                <div
-                  className="absolute inset-0 bg-black/60"
-                  onClick={() => { setShowFeelingModal(false); setSelectedFeeling(null); }}
-                />
-
-                <div className="relative w-full max-w-md bg-white/95 dark:bg-gray-900/95 frosted-glass border border-white/20 rounded-lg p-6 z-[101] max-h-[85vh] flex flex-col shadow-2xl">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">How are you feeling?</h3>
-
-                  <div className="overflow-y-auto flex-1 pr-2">
-                    <div className="grid grid-cols-2 gap-2 mb-6">
-                      {feelings.map((feeling) => (
-                        <button
-                          key={feeling}
-                          onClick={() => setSelectedFeeling(feeling)}
-                          className={`p-3 rounded-lg text-sm font-semibold transition ${
-                            selectedFeeling === feeling
-                              ? 'bg-blue-600 text-white'
-                              : 'bg-white/10 dark:bg-black/20 text-gray-900 dark:text-white hover:bg-white/20 dark:hover:bg-black/30'
-                          }`}
-                        >
-                          {feeling}
-                        </button>
-                      ))}
-                    </div>
-
-                    <hr className="border-white/20 my-4" />
-
-                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">What are you doing?</h4>
-
-                    <div className="grid grid-cols-2 gap-2 mb-6">
-                      {activities.map((activity) => (
-                        <button
-                          key={activity}
-                          onClick={() => setSelectedFeeling(activity)}
-                          className={`p-3 rounded-lg text-sm font-semibold transition ${
-                            selectedFeeling === activity
-                              ? 'bg-yellow-600 text-white'
-                              : 'bg-white/10 dark:bg-black/20 text-gray-900 dark:text-white hover:bg-white/20 dark:hover:bg-black/30'
-                          }`}
-                        >
-                          {activity}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end space-x-2 mt-4 pt-4 border-t border-white/20">
-                    <button
-                      type="button"
-                      onClick={() => { setShowFeelingModal(false); setSelectedFeeling(null); }}
-                      className="px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!selectedFeeling) return;
-                        const newPost: Post = {
-                          id: Date.now(),
-                          author: 'You',
-                          time: 'Just now',
-                          content: `${selectedFeeling}`,
-                          likes: 0,
-                          weight: 0
-                        };
-                        setPosts((prev) => [newPost, ...prev]);
-                        setSelectedFeeling(null);
-                        setShowFeelingModal(false);
-                      }}
-                      className="px-4 py-2 rounded bg-yellow-600 text-white hover:bg-yellow-500"
-                    >
-                      Post
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Feed */}
-            <div id="post-feed" className="w-full max-w-xl space-y-4">
-              {posts.map(renderPost)}
-            </div>
-
-            {/* Loading Sentinel */}
-            <div
-              ref={sentinelRef}
-              className="h-20 w-full flex items-center justify-center"
-            >
-              {loading && (
-                <div className="flex items-center space-x-2 text-white">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                </div>
-              )}
-              {!hasMore && posts.length > 0 && (
-                <p className="text-white/60 text-sm">You've reached the end!</p>
-              )}
+            <div className="flex justify-around text-sm font-semibold text-white">
+              <button 
+                onClick={() => fileInputRef.current?.click()} 
+                className="flex items-center space-x-2 hover:bg-white/10 p-2 rounded-lg transition"
+              >
+                <span className="text-xl">🖼️</span><span>Photo/Video</span>
+              </button>
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                hidden 
+                multiple 
+                onChange={handlePostFileUpload} 
+                accept="image/*,video/*"
+              />
             </div>
           </div>
 
-          {/* Floating Chat Window */}
-              {showChat && (
-                <div className="fixed bottom-24 left-6 z-[100] w-80 h-96 bg-gray-900/90 frosted-glass border border-white/20 rounded-xl shadow-2xl flex flex-col animate-in slide-in-from-bottom-5">
-                  {/* Header */}
-                  <div className="p-3 border-b border-white/10 flex justify-between items-center bg-blue-600/30 rounded-t-xl">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="text-white font-bold text-sm">Messages</span>
-                    </div>
-                    <button 
-                      onClick={() => setShowChat(false)}
-                      className="text-gray-400 hover:text-white transition text-lg"
-                    >
-                      ×
-                    </button>
-                  </div>
+          <div id="post-feed" className="w-full max-w-xl space-y-4">
+            {posts.map(renderPost)}
+          </div>
 
-                  {/* Messages Area */}
-                  <div className="flex-grow p-4 overflow-y-auto text-sm space-y-3 custom-scrollbar">
-                    <div className="bg-blue-500/20 p-2 rounded-lg text-gray-200 self-start max-w-[80%]">
-                      Welcome to the Flexify chat!
-                    </div>
-                  </div>
+          <div ref={sentinelRef} className="h-20 w-full flex items-center justify-center">
+            {loading && <div className="animate-pulse text-white">Loading...</div>}
+          </div>
+        </div>
 
-                  {/* Input Area */}
-                  <div className="p-3 border-t border-white/10">
-                    <div className="relative">
-                      <input 
-                        type="text" 
-                        placeholder="Type a message..." 
-                        className="w-full bg-black/40 border border-white/10 rounded-full px-4 py-2 text-xs text-white focus:outline-none focus:border-blue-500 transition-all"
-                      />
-                      <button className="absolute right-3 top-1.5 text-blue-400 hover:text-blue-300">
-                        🚀
-                      </button>
+        {/* --- CREATE POST MODAL --- */}
+        {showCreateModal && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+            <div className="w-full max-w-lg bg-gray-900 border border-white/20 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95">
+              <div className="p-4 border-b border-white/10 flex justify-between items-center">
+                <h3 className="text-white font-bold text-lg">Create Post</h3>
+                <button 
+                    onClick={() => {
+                        setShowCreateModal(false); 
+                        setUploadedFiles([]); 
+                        setShowEmojiPicker(false);
+                    }} 
+                    className="text-gray-400 hover:text-white text-2xl"
+                >
+                    ×
+                </button>
+              </div>
+              <div className="p-4">
+                <textarea
+                  value={newContent}
+                  onChange={(e) => setNewContent(e.target.value)}
+                  placeholder="What's on your mind?"
+                  className="w-full h-32 bg-transparent text-white placeholder-gray-500 resize-none focus:outline-none text-lg"
+                />
+                {uploadedFiles.length > 0 && (
+                  <div className="mt-3 p-2 bg-white/5 rounded-lg border border-white/10 text-xs text-blue-400">
+                    📎 {uploadedFiles.length} file(s) attached
+                  </div>
+                )}
+              </div>
+              
+              {/* Updated Modal Footer with Emoji Picker and Post Button */}
+              <div className="p-4 border-t border-white/10 flex justify-between items-center">
+                <div className="relative">
+                  <button 
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)} 
+                    className="text-xl p-2 hover:bg-white/10 rounded-full transition"
+                    title="Add Emoji"
+                  >
+                    😊
+                  </button>
+                  {showEmojiPicker && (
+                    <div className="absolute bottom-full left-0 mb-2 p-2 bg-gray-800 border border-white/10 rounded-lg grid grid-cols-6 gap-1 z-[120] shadow-xl w-48">
+                      {emojis.map(e => (
+                        <button 
+                          key={e} 
+                          onClick={() => setNewContent(prev => prev + e)} 
+                          className="hover:scale-125 transition p-1"
+                        >
+                          {e}
+                        </button>
+                      ))}
                     </div>
+                  )}
+                </div>
+                <button 
+                  onClick={handleCreatePost}
+                  disabled={!newContent.trim() && uploadedFiles.length === 0}
+                  className="px-8 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-lg transition"
+                >
+                  Post
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* --- FLOATING CHAT WINDOW --- */}
+        {showChat && (
+          <div className="fixed bottom-6 right-6 z-[100] w-80 h-[450px] bg-gray-900/95 frosted-glass border border-white/20 rounded-2xl shadow-2xl flex flex-col animate-in slide-in-from-bottom-5">
+            <div className="p-3 border-b border-white/10 flex justify-between items-center bg-blue-600/30 rounded-t-2xl">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-xs font-bold text-white">
+                  {activeChatUser ? activeChatUser[0] : 'F'}
+                </div>
+                <span className="text-white font-bold text-sm">{activeChatUser || 'Chat'}</span>
+              </div>
+              <button onClick={() => setShowChat(false)} className="text-white/60 hover:text-white transition">×</button>
+            </div>
+
+            <div className="flex-grow p-4 overflow-y-auto space-y-3 bg-black/20">
+              {chatMessages.map((msg, i) => (
+                <div key={i} className={`flex flex-col ${msg.sender === 'You' ? 'items-end' : 'items-start'}`}>
+                  <div className={`max-w-[85%] p-2 rounded-xl text-xs ${
+                    msg.sender === 'You' ? 'bg-blue-600 text-white' : 'bg-white/10 text-gray-200 border border-white/5'
+                  }`}>
+                    {msg.type === 'media' && msg.file && (
+                      <img src={msg.file} alt="attachment" className="rounded-lg mb-1 max-h-32 object-cover" />
+                    )}
+                    {msg.text}
                   </div>
                 </div>
-              )}
-        </section>  
+              ))}
+            </div>
+
+            {showChatEmoji && (
+              <div className="absolute bottom-16 left-2 right-2 p-2 bg-gray-800 border border-white/10 rounded-lg grid grid-cols-6 gap-1 z-10 shadow-xl">
+                {emojis.map(e => (
+                  <button key={e} onClick={() => setChatInput(prev => prev + e)} className="hover:scale-110 transition">{e}</button>
+                ))}
+              </div>
+            )}
+
+            <div className="p-3 border-t border-white/10 bg-black/40 rounded-b-2xl flex items-center gap-2">
+              <button onClick={() => chatFileInputRef.current?.click()} className="text-gray-400 hover:text-blue-400">📎</button>
+              <input type="file" hidden ref={chatFileInputRef} onChange={handleChatFileUpload} accept="image/*,video/*" />
+              <div className="relative flex-1">
+                <input 
+                  type="text" 
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && sendChatMessage()}
+                  placeholder="Type..." 
+                  className="w-full bg-white/5 border border-white/10 rounded-full px-3 py-1 text-xs text-white focus:outline-none"
+                />
+                <button onClick={() => setShowChatEmoji(!showChatEmoji)} className="absolute right-2 top-1 text-gray-400 hover:text-yellow-400 text-xs">😊</button>
+              </div>
+              <button onClick={sendChatMessage} className="p-1.5 bg-blue-600 rounded-full text-xs">🚀</button>
+            </div>
+          </div>
+        )}
+      </section>
     </>
   );
 }

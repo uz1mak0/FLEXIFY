@@ -157,7 +157,7 @@ export default function LoginPage() {
               <span className="text-blue-400">FLEXIFY</span>
             </h2>
             <p className="text-xs text-gray-400 leading-tight mt-1">
-              Next-gen Social Media platform for sharing experiences in life.
+              Next-gen Social Media platform
             </p>
           </div>
 

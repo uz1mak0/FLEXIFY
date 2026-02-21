@@ -268,7 +268,7 @@ export default function RegisterPage() {
               <span className="text-blue-400">FLEXIFY</span>
             </h2>
             <p className="text-[10px] text-gray-400 leading-tight">
-              Next-gen Social Media platform.
+              Next-gen Social Media platform
             </p>
           </div>
 

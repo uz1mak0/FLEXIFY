@@ -77,7 +77,7 @@ export default function UserProfile({ isOpen, onClose }: UserProfileProps) {
           {/* Name */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-              Full Name
+              User Name
             </label>
             {isEditingProfile ? (
               <input
@@ -131,7 +131,7 @@ export default function UserProfile({ isOpen, onClose }: UserProfileProps) {
           </div>
 
           {/* Location */}
-          <div>
+          {/*<div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
               Location
             </label>
@@ -147,10 +147,10 @@ export default function UserProfile({ isOpen, onClose }: UserProfileProps) {
                 {userProfile.location}
               </p>
             )}
-          </div>
+          </div>*/}
 
           {/* Phone */}
-          <div>
+          {/*<div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
               Phone Number
             </label>
@@ -166,10 +166,10 @@ export default function UserProfile({ isOpen, onClose }: UserProfileProps) {
                 {userProfile.phone}
               </p>
             )}
-          </div>
+          </div>*/}
 
           {/* Birthdate */}
-          <div>
+          {/*<div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
               Birth Date
             </label>
@@ -185,10 +185,10 @@ export default function UserProfile({ isOpen, onClose }: UserProfileProps) {
                 {new Date(userProfile.birthdate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
               </p>
             )}
-          </div>
+          </div>*/}
 
           {/* Website */}
-          <div>
+          {/*<div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
               Website
             </label>
@@ -206,7 +206,7 @@ export default function UserProfile({ isOpen, onClose }: UserProfileProps) {
                 </a>
               </p>
             )}
-          </div>
+          </div>*/}
         </div>
 
         {/* Action Buttons */}
