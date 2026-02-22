@@ -35,17 +35,26 @@ export default function HomePage() {
 
   const emojis = ['😀', '😂', '😍', '😢', '😎', '🎉', '👍', '♥️', '🔥', '✨', '😡', '😱', '🤔', '😴', '🙏', '💪', '🎊', '💯'];
 
+ 
+  interface ExtendedPost extends Post {
+    images?: string[];
+  }
+
+
   // --- Post Logic ---
   const handleCreatePost = () => {
     if (!newContent.trim() && uploadedFiles.length === 0) return;
 
-    const newPost: Post = {
+    const imageUrls = uploadedFiles.map(file => URL.createObjectURL(file));
+
+    const newPost: ExtendedPost = {
       id: Date.now(),
       author: "You",
       time: "Just now", 
       content: newContent,
       likes: 0,
       weight: 1.0,
+      images: imageUrls,
     };
 
    
@@ -149,6 +158,20 @@ export default function HomePage() {
         </div>
       </div>
       <p className="mb-4">{post.content}</p>
+
+      {post.images && post.images.length > 0 && (
+        <div className="mb-4 grid grid-cols-1 gap-2">
+          {post.images.map((src, index) => (
+            <img 
+              key={index}
+              src={src}
+              alt="Post attachment"
+              className="rounded-lg w-full max-h-96 object-cover border border-white/10"
+              />
+          ))}
+        </div>
+      )}
+
       <div className="flex space-x-4 border-t border-white/10 pt-3">
         <button className="hover:text-blue-400 transition">👍 {post.likes}</button>
         <button className="hover:text-blue-400 transition">💬 Comment</button>
